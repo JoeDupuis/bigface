@@ -1,0 +1,30 @@
+.dev-signin {
+  margin-top: var(--space-xl);
+  padding: var(--space-lg);
+  background-color: var(--color-white-alpha-10);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--color-warning);
+
+  & > h3 {
+    margin: 0 0 var(--space-md);
+    font-size: var(--font-sm);
+    color: var(--color-warning);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  & > .dev-user-button {
+    padding: var(--space-sm) var(--space-lg);
+    background-color: var(--color-warning);
+    color: var(--color-black);
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+
+    &:hover {
+      background-color: var(--color-accent-dim);
+    }
+  }
+}

@@ -1,0 +1,39 @@
+.flash-alert {
+  position: relative;
+  padding: var(--space-sm) var(--space-lg);
+  margin-bottom: var(--space-md);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  backdrop-filter: var(--glass-blur);
+  font-weight: 500;
+
+  &.-success {
+    color: var(--color-success);
+    background-color: var(--color-success-alpha-20);
+    border-color: var(--color-success-alpha-40);
+  }
+
+  &.-danger {
+    color: var(--color-danger);
+    background-color: var(--color-danger-alpha-20);
+    border-color: var(--color-danger-alpha-40);
+  }
+
+  & > .closeBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: var(--space-sm) var(--space-lg);
+    color: inherit;
+    background: none;
+    border: none;
+    font-size: var(--font-2xl);
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+}

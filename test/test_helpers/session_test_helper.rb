@@ -4,22 +4,16 @@ module SessionTestHelper
 
     ActionDispatch::TestRequest.create.cookie_jar.tap do |cookie_jar|
       cookie_jar.signed[:session_id] = Current.session.id
-      if defined?(page)
-        page.driver.set_cookie(:session_id, cookie_jar[:session_id])
-      else
-        cookies[:session_id] = cookie_jar[:session_id]
-      end
+      cookies["session_id"] = cookie_jar[:session_id]
     end
   end
 
   def sign_out
-    if defined?(page)
-        Current.session&.destroy!
-        page.driver.remove_cookie(:session_id)
-
-    else
-        Current.session&.destroy!
-        cookies.delete(:session_id)
-    end
+    Current.session&.destroy!
+    cookies.delete("session_id")
   end
+end
+
+ActiveSupport.on_load(:action_dispatch_integration_test) do
+  include SessionTestHelper
 end
