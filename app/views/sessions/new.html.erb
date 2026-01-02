@@ -5,9 +5,9 @@
   <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
   <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72 %><br>
   <%= form.submit "Sign in" %>
+
+  <%= render "dev_signin" %>
 <% end %>
 <br>
 
 <%= link_to "Forgot password?", new_password_path %>
-
-<%= render "dev_signin" %>
