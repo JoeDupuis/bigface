@@ -1,0 +1,9 @@
+<h1>Contacts</h1>
+
+<% if @contacts.any? %>
+  <% @contacts.each do |contact| %>
+    <p><%= contact.contact.name %></p>
+  <% end %>
+<% else %>
+  <p>No contacts yet</p>
+<% end %>

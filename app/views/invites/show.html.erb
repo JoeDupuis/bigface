@@ -1,0 +1,11 @@
+<h1>Invite</h1>
+
+<p><%= @invite.sender.name %> wants to connect with you</p>
+
+<%= form_with url: invite_path(@invite.token), method: :patch do |form| %>
+  <%= form.submit "Accept" %>
+<% end %>
+
+<%= form_with url: invite_path(@invite.token), method: :delete do |form| %>
+  <%= form.submit "Decline" %>
+<% end %>

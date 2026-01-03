@@ -80,4 +80,46 @@ class InviteTest < ActiveSupport::TestCase
     assert_not invite.valid?
     assert_includes invite.errors[:recipient_email], "already a contact"
   end
+
+  test "accept! creates contacts" do
+    alice = users(:one)
+    bob = users(:two)
+    invite = Invite.create!(sender: alice, recipient_email: bob.email_address)
+
+    invite.accept!(bob)
+
+    assert Contact.exists?(user: alice, contact: bob)
+    assert Contact.exists?(user: bob, contact: alice)
+    assert invite.accepted_at.present?
+  end
+
+  test "accepted? returns true when accepted" do
+    alice = users(:one)
+    bob = users(:two)
+    invite = Invite.create!(sender: alice, recipient_email: bob.email_address)
+    invite.update!(accepted_at: Time.current)
+
+    assert invite.accepted?
+  end
+
+  test "accepted? returns false when pending" do
+    invite = invites(:alice_to_carol)
+
+    assert_not invite.accepted?
+  end
+
+  test "pending_for returns matching invites" do
+    alice = users(:one)
+    bob = users(:two)
+    pending_to_bob = Invite.create!(sender: alice, recipient_email: bob.email_address)
+    Invite.create!(sender: bob, recipient_email: alice.email_address)
+    accepted_to_bob = Invite.create!(sender: alice, recipient_email: "temp@example.com")
+    accepted_to_bob.update!(accepted_at: Time.current)
+    accepted_to_bob.update_column(:recipient_email, bob.email_address)
+
+    result = Invite.pending_for(bob)
+
+    assert_includes result, pending_to_bob
+    assert_not_includes result, accepted_to_bob
+  end
 end

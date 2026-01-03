@@ -1,4 +1,13 @@
 class InvitesController < ApplicationController
+  before_action :set_invite, only: [ :show, :update, :destroy ]
+
+  def index
+    @invites = Invite.pending_for(current_user)
+  end
+
+  def show
+  end
+
   def new
     @invite = Invite.new
   end
@@ -13,7 +22,34 @@ class InvitesController < ApplicationController
     end
   end
 
+  def update
+    if @invite.accepted?
+      redirect_to contacts_path, notice: "Already accepted"
+    else
+      @invite.accept!(current_user)
+      redirect_to contacts_path, notice: "You are now connected with #{@invite.sender.name}!"
+    end
+  end
+
+  def destroy
+    @invite.destroy!
+    redirect_to invites_path, notice: "Invite declined"
+  end
+
   private
+
+  def set_invite
+    @invite = Invite.find_by!(token: params[:token])
+    authorize_recipient!
+  end
+
+  def authorize_recipient!
+    raise ActiveRecord::RecordNotFound unless @invite.recipient_email == current_user.email_address
+  end
+
+  def current_user
+    Current.session.user
+  end
 
   def invite_params
     params.require(:invite).permit(:recipient_email)

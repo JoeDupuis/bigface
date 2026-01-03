@@ -1,0 +1,10 @@
+<h1>Pending Invites</h1>
+
+<% if @invites.any? %>
+  <% @invites.each do |invite| %>
+    <p><%= invite.sender.name %> wants to connect with you</p>
+    <%= link_to "View", invite_path(invite.token) %>
+  <% end %>
+<% else %>
+  <p>No pending invites</p>
+<% end %>
