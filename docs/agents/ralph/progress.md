@@ -2,6 +2,18 @@
 
 ## Current State
 
+Feature 06 (turn-credentials) completed. The codebase now has:
+- TurnCredentials model (plain Ruby class) that fetches TURN/STUN credentials from Cloudflare
+- GET /turn_credentials endpoint returning formatted ICE servers JSON
+- Caching with 1-hour expiration (credentials valid for 24h)
+- Added webmock gem for HTTP stubbing in tests
+
+Next: Pick 10-webrtc-connection (now unblocked), 14-call-log, or 11-call-hangup (needs 10).
+
+---
+
+## Previous State
+
 Feature 13 (call-timeout) completed. The codebase now has:
 - CallTimeoutJob scheduled on call creation (2s in test, 30s in production)
 - Call#timeout! marks call as missed and broadcasts to both channels
@@ -9,18 +21,6 @@ Feature 13 (call-timeout) completed. The codebase now has:
 - incoming_call_controller.js handles call-timeout event to dismiss overlay
 
 Next: Pick 06-turn-credentials (unblocks 10), 14-call-log, or 10-webrtc-connection (needs 06). Feature 11 (call-hangup) needs 10.
-
----
-
-## Previous State
-
-Feature 12 (multi-device-dismiss) completed. The codebase now has:
-- Call model broadcasts `call_answered` to UserNotificationChannel on answer
-- user_notification_channel.js dispatches "call-answered" custom event
-- incoming_call_controller.js handles call-answered event to dismiss overlay
-- Full system test using Capybara's using_session for multi-device scenario
-
-Next: Pick 10-webrtc-connection (needs 06), 13-call-timeout, or 14-call-log. Feature 06 (turn-credentials) is needed before 10.
 
 ---
 
@@ -33,7 +33,7 @@ Next: Pick 10-webrtc-connection (needs 06), 13-call-timeout, or 14-call-log. Fea
 | 03 | invite-accept | Completed | 02 |
 | 04 | contact-list | Completed | 03 |
 | 05 | action-cable-setup | Completed | None |
-| 06 | turn-credentials | Pending | None |
+| 06 | turn-credentials | Completed | None |
 | 07 | call-model | Completed | 03 |
 | 08 | call-initiation | Completed | 04, 05, 07 |
 | 09 | incoming-call-ui | Completed | 05, 07, 08 |
@@ -46,6 +46,30 @@ Next: Pick 10-webrtc-connection (needs 06), 13-call-timeout, or 14-call-log. Fea
 ---
 
 ## Session History
+
+### Session 2026-01-02 (11)
+
+**Feature**: 06-turn-credentials
+**Status**: Completed
+
+**What was done**:
+- Created TurnCredentials model (plain Ruby class in app/models)
+- Added TurnCredentialsController with show action
+- Added GET /turn_credentials route
+- Fetches TURN/STUN credentials from Cloudflare API
+- Caches credentials for 1 hour (valid for 24h)
+- Returns 401 for unauthenticated requests
+- Returns 503 on Cloudflare API errors
+- Added webmock gem for HTTP stubbing in tests
+- Added WebMock.disable_net_connect!(allow_localhost: true) for system tests
+- Fixed pre-existing CallsControllerTest broadcast test failures with with_test_cable_adapter helper
+
+**Notes for next session**:
+- Feature 10 (webrtc-connection) is now unblocked (dependencies 05, 06, 09 complete)
+- Feature 14 (call-log) is available
+- Feature 11 (call-hangup) needs 10 first
+
+---
 
 ### Session 2026-01-02 (10)
 
@@ -283,4 +307,4 @@ Next: Pick 10-webrtc-connection (needs 06), 13-call-timeout, or 14-call-log. Fea
 
 ## Suggested Next Feature
 
-Pick `06-turn-credentials.md` (unblocks 10), `14-call-log.md`, or proceed with `10-webrtc-connection.md` after 06 is done.
+Pick `10-webrtc-connection.md` (now unblocked), `14-call-log.md`, or proceed with `11-call-hangup.md` after 10 is done.
