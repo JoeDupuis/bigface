@@ -208,4 +208,53 @@ class CallTest < ActiveSupport::TestCase
       Call.create!(caller: alice, recipient: bob)
     end
   end
+
+  test "hangup! from ringing transitions to ended" do
+    call = calls(:alice_calls_bob)
+    assert call.ringing?
+
+    call.hangup!
+
+    assert call.ended?
+    assert_not_nil call.ended_at
+  end
+
+  test "hangup! from active transitions to ended" do
+    call = calls(:alice_calls_bob)
+    call.update!(status: :active, started_at: Time.current)
+
+    call.hangup!
+
+    assert call.ended?
+    assert_not_nil call.ended_at
+  end
+
+  test "hangup! from ringing broadcasts to recipient user notification channel" do
+    call = calls(:alice_calls_bob)
+    bob = users(:two)
+
+    assert_broadcasts(UserNotificationChannel.broadcasting_for(bob), 1) do
+      call.hangup!
+    end
+  end
+
+  test "hangup! from active broadcasts to call channel" do
+    call = calls(:alice_calls_bob)
+    call.update!(status: :active, started_at: Time.current)
+
+    assert_broadcasts(CallChannel.broadcasting_for(call), 1) do
+      call.hangup!
+    end
+  end
+
+  test "hangup! does nothing if already ended" do
+    call = calls(:alice_calls_bob)
+    call.update!(status: :ended, ended_at: 1.hour.ago)
+    original_ended_at = call.ended_at
+
+    call.hangup!
+
+    assert call.ended?
+    assert_equal original_ended_at, call.ended_at
+  end
 end

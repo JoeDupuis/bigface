@@ -17,7 +17,7 @@
     </p>
 
     <% if @call.ringing? && @call.caller == Current.session.user %>
-      <%= button_to "Cancel", call_path(@call), method: :delete, class: "button -danger" %>
+      <button data-action="call#endCall" class="button -danger">Cancel</button>
     <% elsif @call.active? %>
       <button data-action="call#endCall" class="button -danger">End Call</button>
     <% end %>

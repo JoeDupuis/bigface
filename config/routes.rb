@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :calls, only: [ :create, :show ] do
     resource :answer, only: [ :create ], controller: "call/answers"
     resource :decline, only: [ :create ], controller: "call/declines"
+    resource :hangup, only: [ :create ], controller: "call/hangups"
   end
 
   mount MissionControl::Jobs::Engine, at: "/jobs" if defined?(MissionControl::Jobs::Engine)

@@ -181,4 +181,82 @@ class CallsControllerTest < ActionDispatch::IntegrationTest
       end
     end
   end
+
+  test "POST /calls/:call_id/hangup as caller during ringing ends call" do
+    call = calls(:alice_calls_bob)
+    alice = users(:one)
+    sign_in_as(alice)
+
+    post call_hangup_path(call)
+
+    call.reload
+    assert call.ended?
+    assert_not_nil call.ended_at
+    assert_redirected_to contacts_path
+  end
+
+  test "POST /calls/:call_id/hangup as caller during active ends call" do
+    call = calls(:alice_calls_bob)
+    call.update!(status: :active, started_at: Time.current)
+    alice = users(:one)
+    sign_in_as(alice)
+
+    post call_hangup_path(call)
+
+    call.reload
+    assert call.ended?
+    assert_not_nil call.ended_at
+    assert_redirected_to contacts_path
+  end
+
+  test "POST /calls/:call_id/hangup as recipient during active ends call" do
+    call = calls(:alice_calls_bob)
+    call.update!(status: :active, started_at: Time.current)
+    bob = users(:two)
+    sign_in_as(bob)
+
+    post call_hangup_path(call)
+
+    call.reload
+    assert call.ended?
+    assert_redirected_to contacts_path
+  end
+
+  test "POST /calls/:call_id/hangup as unrelated user returns 404" do
+    call = calls(:alice_calls_bob)
+    charlie = users(:three)
+    sign_in_as(charlie)
+
+    post call_hangup_path(call)
+
+    assert_response :not_found
+    call.reload
+    assert call.ringing?
+  end
+
+  test "POST /calls/:call_id/hangup during ringing broadcasts to recipient" do
+    call = calls(:alice_calls_bob)
+    alice = users(:one)
+    bob = users(:two)
+    sign_in_as(alice)
+
+    with_test_cable_adapter do
+      assert_broadcasts(UserNotificationChannel.broadcasting_for(bob), 1) do
+        post call_hangup_path(call)
+      end
+    end
+  end
+
+  test "POST /calls/:call_id/hangup during active broadcasts to call channel" do
+    call = calls(:alice_calls_bob)
+    call.update!(status: :active, started_at: Time.current)
+    alice = users(:one)
+    sign_in_as(alice)
+
+    with_test_cable_adapter do
+      assert_broadcasts(CallChannel.broadcasting_for(call), 1) do
+        post call_hangup_path(call)
+      end
+    end
+  end
 end

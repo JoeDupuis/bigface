@@ -8,15 +8,18 @@ export default class extends Controller {
     this.handleIncomingCall = this.handleIncomingCall.bind(this)
     this.handleCallAnswered = this.handleCallAnswered.bind(this)
     this.handleCallTimeout = this.handleCallTimeout.bind(this)
+    this.handleCallCancelled = this.handleCallCancelled.bind(this)
     window.addEventListener("incoming-call", this.handleIncomingCall)
     window.addEventListener("call-answered", this.handleCallAnswered)
     window.addEventListener("call-timeout", this.handleCallTimeout)
+    window.addEventListener("call-cancelled", this.handleCallCancelled)
   }
 
   disconnect() {
     window.removeEventListener("incoming-call", this.handleIncomingCall)
     window.removeEventListener("call-answered", this.handleCallAnswered)
     window.removeEventListener("call-timeout", this.handleCallTimeout)
+    window.removeEventListener("call-cancelled", this.handleCallCancelled)
   }
 
   handleIncomingCall(event) {
@@ -33,6 +36,12 @@ export default class extends Controller {
   }
 
   handleCallTimeout(event) {
+    if (event.detail.call_id === this.callIdValue) {
+      this.dismiss()
+    }
+  }
+
+  handleCallCancelled(event) {
     if (event.detail.call_id === this.callIdValue) {
       this.dismiss()
     }

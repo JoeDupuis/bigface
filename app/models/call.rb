@@ -43,6 +43,17 @@ class Call < ApplicationRecord
     broadcast_timeout
   end
 
+  def hangup!
+    case status
+    when "ringing"
+      update!(status: :ended, ended_at: Time.current)
+      broadcast_cancellation
+    when "active"
+      update!(status: :ended, ended_at: Time.current)
+      broadcast_hangup
+    end
+  end
+
   private
 
   def broadcast_to_recipient
@@ -73,6 +84,17 @@ class Call < ApplicationRecord
     CallChannel.broadcast_to(self, { type: "timeout" })
     UserNotificationChannel.broadcast_to(recipient, {
       type: "call_timeout",
+      call_id: id
+    })
+  end
+
+  def broadcast_hangup
+    CallChannel.broadcast_to(self, { type: "hangup" })
+  end
+
+  def broadcast_cancellation
+    UserNotificationChannel.broadcast_to(recipient, {
+      type: "call_cancelled",
       call_id: id
     })
   end

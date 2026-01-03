@@ -114,8 +114,15 @@ export default class extends Controller {
   }
 
   endCall() {
-    this.subscription?.send({ type: "hangup" })
-    this.handleHangup()
+    const csrfToken = document.querySelector("[name='csrf-token']")?.content || ""
+    fetch(`/calls/${this.callIdValue}/hangup`, {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": csrfToken
+      }
+    }).then(() => {
+      this.handleHangup()
+    })
   }
 
   disconnect() {

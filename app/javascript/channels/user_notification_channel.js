@@ -12,6 +12,9 @@ consumer.subscriptions.create("UserNotificationChannel", {
       case "call_timeout":
         window.dispatchEvent(new CustomEvent("call-timeout", { detail: data }))
         break
+      case "call_cancelled":
+        window.dispatchEvent(new CustomEvent("call-cancelled", { detail: data }))
+        break
     }
   }
 })
