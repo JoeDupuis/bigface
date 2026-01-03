@@ -2,26 +2,13 @@
 
 ## Current State
 
-Feature 11 (call-hangup) completed. The codebase now has:
-- `hangup!` method in Call model with proper state transitions
-- Call::HangupsController with create action
-- POST /calls/:id/hangup route
-- `call_cancelled` broadcast to recipient for ringing calls
-- `hangup` broadcast to CallChannel for active calls
-- JavaScript handlers for call-cancelled event
+**ALL FEATURES COMPLETE!**
 
-Next: Pick 14-call-log.md (the only remaining feature).
-
----
-
-## Previous State
-
-Feature 10 (webrtc-connection) completed. The codebase now has:
-- WebRTCManager class in app/javascript/lib/webrtc_manager.js
-- Full WebRTC signaling via CallChannel (offer/answer/ICE candidates)
-- Updated call_controller.js with WebRTC integration
-- call-screen.css for video call layout (remote video center, local video corner)
-- End Call button for active calls
+BigFace MVP is fully implemented with:
+- User authentication and naming
+- Contact invites and management
+- Real-time video calling with WebRTC
+- Call history/log
 
 ---
 
@@ -42,11 +29,34 @@ Feature 10 (webrtc-connection) completed. The codebase now has:
 | 11 | call-hangup | Completed | 10 |
 | 12 | multi-device-dismiss | Completed | 09 |
 | 13 | call-timeout | Completed | 08, 09 |
-| 14 | call-log | Pending | 07 |
+| 14 | call-log | Completed | 07 |
 
 ---
 
 ## Session History
+
+### Session 2026-01-02 (14)
+
+**Feature**: 14-call-log
+**Status**: Completed
+
+**What was done**:
+- Added GET /calls route (index action)
+- Created CallsHelper with format_duration method
+- Created calls/index.html.erb showing call history
+- Shows contact name, direction (incoming/outgoing), outcome, duration, timestamp
+- Orders by most recent first
+- Excludes ringing calls
+- Added Call History link to contacts page
+- Added 4 controller tests covering spec requirements
+- Added call fixtures for testing various call states
+
+**Notes**:
+- All 14 features are now complete
+- 128 tests pass, 1 system test passes
+- Rubocop and Brakeman clean
+
+---
 
 ### Session 2026-01-02 (13)
 
