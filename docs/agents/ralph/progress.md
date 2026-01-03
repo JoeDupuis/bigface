@@ -2,15 +2,15 @@
 
 ## Current State
 
-Feature 02 (invite-model) completed. The codebase now has:
-- Invite model with token generation, email normalization
-- Uniqueness validation scoped to pending invites (allows re-invite after decline)
-- InviteMailer for sending invite emails
-- InvitesController with new/create actions
-- Contact model (prepared for feature 03)
-- User associations for sent_invites and contacts
+Feature 03 (invite-accept) completed. The codebase now has:
+- Full invite flow: send, view, accept, decline
+- Invite model with accept!, accepted?, pending_for methods
+- Contact model with uniqueness validation
+- InvitesController with all actions (index, show, new, create, update, destroy)
+- ContactsController with index action (basic, will be expanded in feature 04)
+- Views for invites index and show
 
-Next: Pick from 03-invite-accept, 05-action-cable-setup, or 06-turn-credentials.
+Next: Pick from 04-contact-list, 05-action-cable-setup, 06-turn-credentials, or 07-call-model.
 
 ---
 
@@ -20,7 +20,7 @@ Next: Pick from 03-invite-accept, 05-action-cable-setup, or 06-turn-credentials.
 |---|---------|--------|--------------|
 | 01 | user-name | Completed | None |
 | 02 | invite-model | Completed | 01 |
-| 03 | invite-accept | Pending | 02 |
+| 03 | invite-accept | Completed | 02 |
 | 04 | contact-list | Pending | 03 |
 | 05 | action-cable-setup | Pending | None |
 | 06 | turn-credentials | Pending | None |
@@ -36,6 +36,27 @@ Next: Pick from 03-invite-accept, 05-action-cable-setup, or 06-turn-credentials.
 ---
 
 ## Session History
+
+### Session 2026-01-02 (3)
+
+**Feature**: 03-invite-accept
+**Status**: Completed
+
+**What was done**:
+- Added `accept!`, `accepted?`, and `pending_for` methods to Invite model
+- Added uniqueness validation to Contact model
+- Added index, show, update, destroy actions to InvitesController
+- Created invites/index.html.erb and invites/show.html.erb views
+- Added ContactsController with index action and basic view
+- Added contacts route
+- Full test coverage for model and controller
+
+**Notes for next session**:
+- Feature 04 (contact-list) and 07 (call-model) now have their dependencies satisfied
+- Features 05 and 06 have no dependencies
+- ContactsController is minimal - feature 04 will expand it
+
+---
 
 ### Session 2026-01-02 (2)
 
@@ -84,4 +105,4 @@ Next: Pick from 03-invite-accept, 05-action-cable-setup, or 06-turn-credentials.
 
 ## Suggested Next Feature
 
-Pick `03-invite-accept.md` to continue the invite flow, or do `05-action-cable-setup.md` or `06-turn-credentials.md` which have no dependencies.
+Pick `04-contact-list.md` to continue the invite flow, `07-call-model.md` to start on calling features, or do `05-action-cable-setup.md` or `06-turn-credentials.md` which have no dependencies.
