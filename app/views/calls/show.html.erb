@@ -4,7 +4,7 @@
   </div>
 
   <% if @call.ringing? && @call.caller == Current.session.user %>
-    <p>Calling <%= @call.recipient.name %>...</p>
+    <p data-call-target="status">Calling <%= @call.recipient.name %>...</p>
     <%= button_to "Cancel", call_path(@call), method: :delete %>
   <% end %>
 

@@ -2,6 +2,8 @@ require "test_helper"
 
 class CallTest < ActiveSupport::TestCase
   include ActionCable::TestHelper
+  include ActiveJob::TestHelper
+
   test "requires caller" do
     call = Call.new(recipient: users(:one))
     assert_not call.valid?
@@ -158,6 +160,52 @@ class CallTest < ActiveSupport::TestCase
 
     assert_broadcasts(UserNotificationChannel.broadcasting_for(bob), 1) do
       call.answer!(session)
+    end
+  end
+
+  test "timeout! transitions ringing to missed" do
+    call = calls(:alice_calls_bob)
+    assert call.ringing?
+
+    call.timeout!
+
+    assert call.missed?
+    assert_not_nil call.ended_at
+  end
+
+  test "timeout! does nothing if not ringing" do
+    call = calls(:alice_calls_bob)
+    call.update!(status: :active, started_at: Time.current)
+
+    call.timeout!
+
+    assert call.active?
+  end
+
+  test "timeout! broadcasts to call channel" do
+    call = calls(:alice_calls_bob)
+
+    assert_broadcasts(CallChannel.broadcasting_for(call), 1) do
+      call.timeout!
+    end
+  end
+
+  test "timeout! broadcasts to recipient user notification channel" do
+    call = calls(:alice_calls_bob)
+    bob = users(:two)
+
+    assert_broadcasts(UserNotificationChannel.broadcasting_for(bob), 1) do
+      call.timeout!
+    end
+  end
+
+  test "schedules timeout job on create" do
+    bob = users(:two)
+    alice = users(:one)
+    Call.where(caller: alice, status: :ringing).update_all(status: :ended)
+
+    assert_enqueued_with(job: CallTimeoutJob) do
+      Call.create!(caller: alice, recipient: bob)
     end
   end
 end

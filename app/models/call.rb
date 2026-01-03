@@ -1,6 +1,8 @@
 class Call < ApplicationRecord
   class InvalidTransition < StandardError; end
 
+  RING_TIMEOUT = Rails.env.test? ? 2.seconds : 30.seconds
+
   belongs_to :caller, class_name: "User"
   belongs_to :recipient, class_name: "User"
   belongs_to :answered_by_session, class_name: "Session", optional: true
@@ -11,6 +13,7 @@ class Call < ApplicationRecord
   validate :caller_and_recipient_are_contacts
 
   after_create_commit :broadcast_to_recipient
+  after_create_commit :schedule_timeout
 
   def answer!(session)
     raise InvalidTransition unless ringing?
@@ -32,6 +35,12 @@ class Call < ApplicationRecord
   def miss!
     raise InvalidTransition unless ringing?
     update!(status: :missed, ended_at: Time.current)
+  end
+
+  def timeout!
+    return unless ringing?
+    update!(status: :missed, ended_at: Time.current)
+    broadcast_timeout
   end
 
   private
@@ -58,6 +67,18 @@ class Call < ApplicationRecord
 
   def broadcast_declined
     CallChannel.broadcast_to(self, { type: "declined" })
+  end
+
+  def broadcast_timeout
+    CallChannel.broadcast_to(self, { type: "timeout" })
+    UserNotificationChannel.broadcast_to(recipient, {
+      type: "call_timeout",
+      call_id: id
+    })
+  end
+
+  def schedule_timeout
+    CallTimeoutJob.set(wait: RING_TIMEOUT).perform_later(id)
   end
 
   def caller_and_recipient_are_contacts
