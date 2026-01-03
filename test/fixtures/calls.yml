@@ -1,0 +1,4 @@
+alice_calls_bob:
+  caller: one
+  recipient: two
+  status: ringing
