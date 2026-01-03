@@ -1,14 +1,25 @@
-<div id="call-container" data-controller="call" data-call-call-id-value="<%= @call.id %>" data-call-role-value="<%= @call.caller == Current.session.user ? 'caller' : 'recipient' %>">
-  <div id="local-video-container">
-    <video id="local-video" autoplay muted playsinline></video>
+<div class="call-screen" data-controller="call" data-call-call-id-value="<%= @call.id %>" data-call-role-value="<%= @call.caller == Current.session.user ? 'caller' : 'recipient' %>">
+  <div class="remote" data-call-target="remoteContainer">
+    <video data-call-target="remoteVideo" autoplay playsinline></video>
   </div>
 
-  <% if @call.ringing? && @call.caller == Current.session.user %>
-    <p data-call-target="status">Calling <%= @call.recipient.name %>...</p>
-    <%= button_to "Cancel", call_path(@call), method: :delete %>
-  <% end %>
+  <div class="local">
+    <video data-call-target="localVideo" autoplay muted playsinline></video>
+  </div>
 
-  <div id="remote-video-container" style="display: none;">
-    <video id="remote-video" autoplay playsinline></video>
+  <div class="controls">
+    <p data-call-target="status">
+      <% if @call.ringing? && @call.caller == Current.session.user %>
+        Calling <%= @call.recipient.name %>...
+      <% elsif @call.active? %>
+        Connected
+      <% end %>
+    </p>
+
+    <% if @call.ringing? && @call.caller == Current.session.user %>
+      <%= button_to "Cancel", call_path(@call), method: :delete, class: "button -danger" %>
+    <% elsif @call.active? %>
+      <button data-action="call#endCall" class="button -danger">End Call</button>
+    <% end %>
   </div>
 </div>

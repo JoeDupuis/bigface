@@ -1,0 +1,88 @@
+.call-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--color-black);
+  display: flex;
+  flex-direction: column;
+
+  & > .remote {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-primary-dark);
+  }
+
+  & > .remote.hidden {
+    display: none;
+  }
+
+  & > .remote > video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  & > .local {
+    position: absolute;
+    bottom: calc(var(--space-2xl) + 80px);
+    right: var(--space-lg);
+    width: 150px;
+    height: 200px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 2px solid var(--color-white-alpha-30);
+  }
+
+  & > .local > video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  & > .controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-xl);
+    background: linear-gradient(to top, var(--color-black-alpha-40), transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  & > .controls > p {
+    color: var(--color-white);
+    font-size: var(--font-lg);
+    margin: 0;
+  }
+
+  & > .controls > .button,
+  & > .controls > form > .button {
+    padding: var(--space-md) var(--space-xl);
+    border-radius: var(--radius-full);
+    font-size: var(--font-lg);
+    border: none;
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  & > .controls > .button:hover,
+  & > .controls > form > .button:hover {
+    transform: scale(1.05);
+  }
+
+  & > .controls > .button.-danger,
+  & > .controls > form > .button.-danger {
+    background: var(--color-danger);
+    color: var(--color-white);
+  }
+
+  & > .controls > .button.-danger:hover,
+  & > .controls > form > .button.-danger:hover {
+    box-shadow: var(--glow-danger);
+  }
+}

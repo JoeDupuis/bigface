@@ -1,21 +1,34 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { WebRTCManager } from "../lib/webrtc_manager"
 
 export default class extends Controller {
-  static targets = ["status"]
+  static targets = ["localVideo", "remoteVideo", "remoteContainer", "status"]
   static values = { callId: Number, role: String }
 
-  connect() {
-    this.startLocalVideo()
+  async connect() {
+    await this.startLocalVideo()
+    await this.fetchTurnCredentials()
     this.subscribeToChannel()
   }
 
   async startLocalVideo() {
     try {
       this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      this.element.querySelector("#local-video").srcObject = this.localStream
+      this.localVideoTarget.srcObject = this.localStream
     } catch (error) {
       console.error("Failed to access camera/microphone:", error)
+    }
+  }
+
+  async fetchTurnCredentials() {
+    try {
+      const response = await fetch("/turn_credentials")
+      const data = await response.json()
+      this.iceServers = data.iceServers
+    } catch (error) {
+      console.error("Failed to fetch TURN credentials:", error)
+      this.iceServers = []
     }
   }
 
@@ -28,8 +41,54 @@ export default class extends Controller {
     )
   }
 
+  initializeWebRTC() {
+    this.webrtc = new WebRTCManager(
+      this.subscription,
+      this.localStream,
+      this.iceServers
+    )
+    this.webrtc.onRemoteStream = (stream) => {
+      this.remoteVideoTarget.srcObject = stream
+      this.remoteContainerTarget.classList.remove("hidden")
+    }
+    this.webrtc.onConnectionStateChange = (state) => {
+      if (state === "connected") {
+        if (this.hasStatusTarget) {
+          this.statusTarget.textContent = "Connected"
+        }
+      } else if (state === "disconnected" || state === "failed") {
+        this.handleHangup()
+      }
+    }
+    this.webrtc.initialize()
+  }
+
   handleSignaling(data) {
     switch (data.type) {
+      case "answered":
+        this.initializeWebRTC()
+        this.webrtc.createOffer()
+        if (this.hasStatusTarget) {
+          this.statusTarget.textContent = "Connecting..."
+        }
+        break
+      case "offer":
+        if (!this.webrtc) {
+          this.initializeWebRTC()
+        }
+        this.webrtc.handleOffer(data.sdp)
+        break
+      case "answer":
+        this.webrtc.handleAnswer(data.sdp)
+        break
+      case "ice_candidate":
+        if (this.webrtc) {
+          this.webrtc.handleIceCandidate(data.candidate)
+        }
+        break
+      case "hangup":
+        this.handleHangup()
+        break
       case "timeout":
         if (this.hasStatusTarget) {
           this.statusTarget.textContent = "No answer"
@@ -38,15 +97,29 @@ export default class extends Controller {
           window.location.href = "/contacts"
         }, 2000)
         break
+      case "declined":
+        if (this.hasStatusTarget) {
+          this.statusTarget.textContent = "Call declined"
+        }
+        setTimeout(() => {
+          window.location.href = "/contacts"
+        }, 2000)
+        break
     }
   }
 
+  handleHangup() {
+    this.webrtc?.close()
+    window.location.href = "/contacts"
+  }
+
+  endCall() {
+    this.subscription?.send({ type: "hangup" })
+    this.handleHangup()
+  }
+
   disconnect() {
-    if (this.localStream) {
-      this.localStream.getTracks().forEach(track => track.stop())
-    }
-    if (this.subscription) {
-      this.subscription.unsubscribe()
-    }
+    this.webrtc?.close()
+    this.subscription?.unsubscribe()
   }
 }
