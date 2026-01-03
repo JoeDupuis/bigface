@@ -2,14 +2,14 @@
 
 ## Current State
 
-Feature 05 (action-cable-setup) completed. The codebase now has:
-- Action Cable connection authentication via session cookie
-- UserNotificationChannel for per-user real-time notifications
-- CallChannel for per-call WebRTC signaling
-- JavaScript consumer and user notification channel setup
-- Call model (minimal version created for channel tests)
+Feature 07 (call-model) completed. The codebase now has:
+- Full Call model with state transitions (answer!, end!, decline!, miss!)
+- Status enum: ringing, active, ended, missed, declined
+- Validations: caller uniqueness for ringing calls, contacts requirement
+- User associations: outgoing_calls, incoming_calls
+- Test fixtures: sessions, Dan user, Alice-Bob contacts
 
-Next: Pick from 06-turn-credentials or 07-call-model. Feature 07 will flesh out the Call model with full functionality. Feature 08 (call-initiation) still needs 07.
+Next: Pick 06-turn-credentials (WebRTC infrastructure) or 08-call-initiation (now unblocked). Feature 14 (call-log) is also now unblocked.
 
 ---
 
@@ -23,7 +23,7 @@ Next: Pick from 06-turn-credentials or 07-call-model. Feature 07 will flesh out 
 | 04 | contact-list | Completed | 03 |
 | 05 | action-cable-setup | Completed | None |
 | 06 | turn-credentials | Pending | None |
-| 07 | call-model | Pending | 03 |
+| 07 | call-model | Completed | 03 |
 | 08 | call-initiation | Pending | 04, 05, 07 |
 | 09 | incoming-call-ui | Pending | 05, 07, 08 |
 | 10 | webrtc-connection | Pending | 05, 06, 09 |
@@ -35,6 +35,32 @@ Next: Pick from 06-turn-credentials or 07-call-model. Feature 07 will flesh out 
 ---
 
 ## Session History
+
+### Session 2026-01-02 (6)
+
+**Feature**: 07-call-model
+**Status**: Completed
+
+**What was done**:
+- Added InvalidTransition error class to Call model
+- Added enum for status (ringing, active, ended, missed, declined)
+- Added uniqueness validation for caller_id scoped to ringing status
+- Added caller_and_recipient_are_contacts validation
+- Added state transition methods: answer!, end!, decline!, miss!
+- Added User associations: outgoing_calls, incoming_calls
+- Created test/models/call_test.rb with full test coverage
+- Created test/fixtures/sessions.yml with alice_session and bob_session
+- Updated test/fixtures/contacts.yml with alice_to_bob, bob_to_alice
+- Updated test/fixtures/users.yml with Dan (user four)
+- Updated existing tests affected by new contact fixtures
+
+**Notes for next session**:
+- Feature 08 (call-initiation) is now unblocked (dependencies 04, 05, 07 complete)
+- Feature 14 (call-log) is also now unblocked
+- Feature 06 (turn-credentials) has no dependencies
+- Dan (user four) has no contacts - use for "no contacts" test scenarios
+
+---
 
 ### Session 2026-01-02 (5)
 
@@ -151,4 +177,4 @@ Next: Pick from 06-turn-credentials or 07-call-model. Feature 07 will flesh out 
 
 ## Suggested Next Feature
 
-Pick `06-turn-credentials.md` for WebRTC infrastructure or `07-call-model.md` to complete the Call model with state transitions and validations. Note: Feature 07's migration is already done from feature 05, so it just needs the model logic.
+Pick `06-turn-credentials.md` for WebRTC infrastructure or `08-call-initiation.md` to start the calling flow. Feature 08 is now fully unblocked.
