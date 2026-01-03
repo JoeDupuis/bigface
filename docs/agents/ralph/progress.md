@@ -2,12 +2,15 @@
 
 ## Current State
 
-Feature 01 (user-name) completed. The codebase now has:
-- User model with name field and validation
-- Home page displaying "Hello, {name}" greeting
-- Two dev users in seeds (Developer, Joe)
+Feature 02 (invite-model) completed. The codebase now has:
+- Invite model with token generation, email normalization
+- Uniqueness validation scoped to pending invites (allows re-invite after decline)
+- InviteMailer for sending invite emails
+- InvitesController with new/create actions
+- Contact model (prepared for feature 03)
+- User associations for sent_invites and contacts
 
-Next: Pick from 02-invite-model, 05-action-cable-setup, or 06-turn-credentials.
+Next: Pick from 03-invite-accept, 05-action-cable-setup, or 06-turn-credentials.
 
 ---
 
@@ -16,7 +19,7 @@ Next: Pick from 02-invite-model, 05-action-cable-setup, or 06-turn-credentials.
 | # | Feature | Status | Dependencies |
 |---|---------|--------|--------------|
 | 01 | user-name | Completed | None |
-| 02 | invite-model | Pending | 01 |
+| 02 | invite-model | Completed | 01 |
 | 03 | invite-accept | Pending | 02 |
 | 04 | contact-list | Pending | 03 |
 | 05 | action-cable-setup | Pending | None |
@@ -33,6 +36,31 @@ Next: Pick from 02-invite-model, 05-action-cable-setup, or 06-turn-credentials.
 ---
 
 ## Session History
+
+### Session 2026-01-02 (2)
+
+**Feature**: 02-invite-model
+**Status**: Completed
+
+**What was done**:
+- Created Invite model with sender, recipient_email, token, accepted_at, declined_at fields
+- Added token generation via `before_create` callback
+- Email normalization using Rails `normalizes`
+- Uniqueness validation scoped to pending invites (where accepted_at AND declined_at are NULL)
+- Custom validations for cannot-invite-self and cannot-invite-existing-contact
+- Created Contact model (needed for contact validation, will be fully used in feature 03)
+- Created InvitesController with new/create actions
+- Created InviteMailer with invite_email action and views
+- Added invites routes with token param
+- Full test coverage for model, controller, and mailer
+
+**Notes for next session**:
+- Feature 03 (invite-accept) depends on 02 and is now unblocked
+- Contact model is created but feature 04 (contact-list) depends on 03
+- declined_at field was added to support re-invite after decline scenario
+- The `pending` scope excludes both accepted and declined invites
+
+---
 
 ### Session 2026-01-02
 
@@ -56,4 +84,4 @@ Next: Pick from 02-invite-model, 05-action-cable-setup, or 06-turn-credentials.
 
 ## Suggested Next Feature
 
-Pick `02-invite-model.md` to continue the invite/contact flow, or do `05-action-cable-setup.md` or `06-turn-credentials.md` which have no dependencies.
+Pick `03-invite-accept.md` to continue the invite flow, or do `05-action-cable-setup.md` or `06-turn-credentials.md` which have no dependencies.
