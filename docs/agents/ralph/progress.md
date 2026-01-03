@@ -2,15 +2,14 @@
 
 ## Current State
 
-Feature 03 (invite-accept) completed. The codebase now has:
-- Full invite flow: send, view, accept, decline
-- Invite model with accept!, accepted?, pending_for methods
-- Contact model with uniqueness validation
-- InvitesController with all actions (index, show, new, create, update, destroy)
-- ContactsController with index action (basic, will be expanded in feature 04)
-- Views for invites index and show
+Feature 04 (contact-list) completed. The codebase now has:
+- Full contact list UI with remove functionality
+- ContactsController with index and destroy actions
+- Mutual contact removal in a transaction
+- Turbo confirmation for remove action
+- Empty state with invite link
 
-Next: Pick from 04-contact-list, 05-action-cable-setup, 06-turn-credentials, or 07-call-model.
+Next: Pick from 05-action-cable-setup, 06-turn-credentials, or 07-call-model. Feature 08 (call-initiation) now has dependencies 04 satisfied; still needs 05 and 07.
 
 ---
 
@@ -21,7 +20,7 @@ Next: Pick from 04-contact-list, 05-action-cable-setup, 06-turn-credentials, or 
 | 01 | user-name | Completed | None |
 | 02 | invite-model | Completed | 01 |
 | 03 | invite-accept | Completed | 02 |
-| 04 | contact-list | Pending | 03 |
+| 04 | contact-list | Completed | 03 |
 | 05 | action-cable-setup | Pending | None |
 | 06 | turn-credentials | Pending | None |
 | 07 | call-model | Pending | 03 |
@@ -36,6 +35,27 @@ Next: Pick from 04-contact-list, 05-action-cable-setup, 06-turn-credentials, or 
 ---
 
 ## Session History
+
+### Session 2026-01-02 (4)
+
+**Feature**: 04-contact-list
+**Status**: Completed
+
+**What was done**:
+- Added `destroy` action to ContactsController with mutual contact removal
+- Added :destroy to contacts routes
+- Updated contacts/index.html.erb with full UI (list, remove buttons, empty state)
+- Added Charlie (user three) to fixtures for testing
+- Added contact fixtures (alice_to_charlie, charlie_to_alice)
+- Created controller tests for all spec requirements
+- Created integration test for full contact flow
+
+**Notes for next session**:
+- Features 05, 06, and 07 are all unblocked
+- Feature 08 (call-initiation) needs 05 and 07 to be done first
+- Consider doing 05 (action-cable-setup) next to unblock more calling features
+
+---
 
 ### Session 2026-01-02 (3)
 
@@ -105,4 +125,4 @@ Next: Pick from 04-contact-list, 05-action-cable-setup, 06-turn-credentials, or 
 
 ## Suggested Next Feature
 
-Pick `04-contact-list.md` to continue the invite flow, `07-call-model.md` to start on calling features, or do `05-action-cable-setup.md` or `06-turn-credentials.md` which have no dependencies.
+Pick `05-action-cable-setup.md` to enable real-time features, `06-turn-credentials.md` for WebRTC infrastructure, or `07-call-model.md` to start on calling data model.
