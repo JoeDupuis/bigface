@@ -3,7 +3,10 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resources :invites, only: [ :index, :new, :create, :show, :update, :destroy ], param: :token
   resources :contacts, only: [ :index, :destroy ]
-  resources :calls, only: [ :create, :show ]
+  resources :calls, only: [ :create, :show ] do
+    resource :answer, only: [ :create ], controller: "call/answers"
+    resource :decline, only: [ :create ], controller: "call/declines"
+  end
 
   mount MissionControl::Jobs::Engine, at: "/jobs" if defined?(MissionControl::Jobs::Engine)
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

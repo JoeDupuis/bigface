@@ -1,4 +1,6 @@
 class CallsController < ApplicationController
+  before_action :set_call, only: %i[show]
+
   def create
     @call = Current.session.user.outgoing_calls.build(call_params)
 
@@ -10,8 +12,6 @@ class CallsController < ApplicationController
   end
 
   def show
-    @call = Call.find_by(id: params[:id])
-
     if @call.nil? || !participant?
       head :not_found
       nil
@@ -19,6 +19,10 @@ class CallsController < ApplicationController
   end
 
   private
+
+  def set_call
+    @call = Call.find_by(id: params[:id])
+  end
 
   def call_params
     params.require(:call).permit(:recipient_id)

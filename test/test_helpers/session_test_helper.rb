@@ -1,6 +1,6 @@
 module SessionTestHelper
-  def sign_in_as(user)
-    Current.session = user.sessions.create!
+  def sign_in_as(user, session: nil)
+    Current.session = session || user.sessions.create!
 
     ActionDispatch::TestRequest.create.cookie_jar.tap do |cookie_jar|
       cookie_jar.signed[:session_id] = Current.session.id

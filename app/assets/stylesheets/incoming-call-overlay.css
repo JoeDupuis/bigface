@@ -1,0 +1,61 @@
+.incoming-call-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-black-alpha-40);
+  backdrop-filter: var(--glass-blur);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+
+  &.hidden {
+    display: none;
+  }
+
+  & > .content {
+    text-align: center;
+    color: var(--color-white);
+  }
+
+  & > .content > .callername {
+    font-size: var(--font-2xl);
+    margin-bottom: var(--space-xl);
+  }
+
+  & > .content > .actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+  }
+
+  & > .content > .actions > .button {
+    padding: var(--space-md) var(--space-xl);
+    border-radius: var(--radius-full);
+    font-size: var(--font-lg);
+    border: none;
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  & > .content > .actions > .button:hover {
+    transform: scale(1.05);
+  }
+
+  & > .content > .actions > .button.-answer {
+    background: var(--color-success);
+    color: var(--color-white);
+  }
+
+  & > .content > .actions > .button.-answer:hover {
+    box-shadow: var(--glow-success);
+  }
+
+  & > .content > .actions > .button.-decline {
+    background: var(--color-danger);
+    color: var(--color-white);
+  }
+
+  & > .content > .actions > .button.-decline:hover {
+    box-shadow: var(--glow-danger);
+  }
+}

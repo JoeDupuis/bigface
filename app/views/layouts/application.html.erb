@@ -30,6 +30,22 @@
 
     <%= yield %>
 
+    <div class="incoming-call-overlay hidden"
+         data-controller="incoming-call"
+         data-incoming-call-target="container">
+      <div class="content">
+        <p class="callername" data-incoming-call-target="callerName"></p>
+        <div class="actions">
+          <button class="button -answer" data-action="incoming-call#answer">
+            Answer
+          </button>
+          <button class="button -decline" data-action="incoming-call#decline">
+            Decline
+          </button>
+        </div>
+      </div>
+    </div>
+
     <% if Rails.env.development? %>
       <div class="branch-indicator">
         <%= current_git_branch || "unknown" %>

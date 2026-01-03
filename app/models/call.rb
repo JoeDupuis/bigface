@@ -15,6 +15,7 @@ class Call < ApplicationRecord
   def answer!(session)
     raise InvalidTransition unless ringing?
     update!(status: :active, started_at: Time.current, answered_by_session: session)
+    broadcast_answered
   end
 
   def end!
@@ -25,6 +26,7 @@ class Call < ApplicationRecord
   def decline!
     raise InvalidTransition unless ringing?
     update!(status: :declined, ended_at: Time.current)
+    broadcast_declined
   end
 
   def miss!
@@ -41,6 +43,17 @@ class Call < ApplicationRecord
       caller_name: caller.name,
       caller_id: caller.id
     })
+  end
+
+  def broadcast_answered
+    CallChannel.broadcast_to(self, {
+      type: "answered",
+      answered_by: answered_by_session_id
+    })
+  end
+
+  def broadcast_declined
+    CallChannel.broadcast_to(self, { type: "declined" })
   end
 
   def caller_and_recipient_are_contacts
