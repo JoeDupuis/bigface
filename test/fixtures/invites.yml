@@ -1,0 +1,10 @@
+alice_to_carol:
+  sender: one
+  recipient_email: carol@example.com
+  token: <%= SecureRandom.urlsafe_base64(32) %>
+
+declined:
+  sender: two
+  recipient_email: declined@example.com
+  token: <%= SecureRandom.urlsafe_base64(32) %>
+  declined_at: <%= 1.day.ago %>

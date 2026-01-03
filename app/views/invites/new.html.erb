@@ -1,0 +1,9 @@
+<h1>Invite a Friend</h1>
+
+<%= render "form_errors", instance: @invite %>
+
+<%= form_with model: @invite do |form| %>
+  <%= form.label :recipient_email, "Email address" %><br>
+  <%= form.email_field :recipient_email, required: true, autofocus: true, placeholder: "friend@example.com" %><br>
+  <%= form.submit "Send Invite" %>
+<% end %>

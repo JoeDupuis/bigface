@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
+  resources :invites, only: [ :index, :new, :create, :show, :update, :destroy ], param: :token
 
   mount MissionControl::Jobs::Engine, at: "/jobs" if defined?(MissionControl::Jobs::Engine)
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
