@@ -65,4 +65,6 @@ end
 group :test do
   gem "cuprite"
   gem "launchy"
+  # TODO remove this when rails support minitest 6
+  gem "minitest", "~> 5.25"
 end
