@@ -1,9 +1,17 @@
-<h1>Contacts</h1>
+<h1>Your Contacts</h1>
 
 <% if @contacts.any? %>
-  <% @contacts.each do |contact| %>
-    <p><%= contact.contact.name %></p>
-  <% end %>
+  <ul>
+    <% @contacts.each do |contact| %>
+      <li>
+        <%= contact.contact.name %>
+        <%= button_to "Remove", contact, method: :delete,
+            data: { turbo_confirm: "Remove #{contact.contact.name}?" } %>
+      </li>
+    <% end %>
+  </ul>
 <% else %>
-  <p>No contacts yet</p>
+  <p>No contacts yet. <%= link_to "Invite someone!", new_invite_path %></p>
 <% end %>
+
+<%= link_to "Invite a contact", new_invite_path %>

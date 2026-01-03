@@ -1,1 +1,7 @@
-{}
+alice_to_charlie:
+  user: one
+  contact: three
+
+charlie_to_alice:
+  user: three
+  contact: one
