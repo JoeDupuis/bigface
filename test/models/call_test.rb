@@ -1,6 +1,7 @@
 require "test_helper"
 
 class CallTest < ActiveSupport::TestCase
+  include ActionCable::TestHelper
   test "requires caller" do
     call = Call.new(recipient: users(:one))
     assert_not call.valid?
@@ -148,5 +149,15 @@ class CallTest < ActiveSupport::TestCase
   test "user has many incoming_calls" do
     bob = users(:two)
     assert_includes bob.incoming_calls, calls(:alice_calls_bob)
+  end
+
+  test "answer! broadcasts call_answered to user notification channel" do
+    call = calls(:alice_calls_bob)
+    bob = users(:two)
+    session = sessions(:bob_session)
+
+    assert_broadcasts(UserNotificationChannel.broadcasting_for(bob), 1) do
+      call.answer!(session)
+    end
   end
 end

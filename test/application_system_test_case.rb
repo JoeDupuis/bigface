@@ -1,4 +1,5 @@
 require "test_helper"
+require "capybara/cuprite"
 
 Capybara.test_id = "data-qa"
 Capybara.add_selector(:test_id) do

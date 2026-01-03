@@ -46,6 +46,10 @@ class Call < ApplicationRecord
   end
 
   def broadcast_answered
+    UserNotificationChannel.broadcast_to(recipient, {
+      type: "call_answered",
+      call_id: id
+    })
     CallChannel.broadcast_to(self, {
       type: "answered",
       answered_by: answered_by_session_id

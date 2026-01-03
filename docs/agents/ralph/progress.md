@@ -2,6 +2,36 @@
 
 ## Current State
 
+Feature 12 (multi-device-dismiss) IN PROGRESS. Implementation done, system test needs debugging.
+
+**What's implemented:**
+- Call model broadcasts `call_answered` to UserNotificationChannel on answer
+- user_notification_channel.js dispatches "call-answered" custom event
+- incoming_call_controller.js handles call-answered event to dismiss overlay
+- Model test for broadcast passes
+
+**Fixes made during this session:**
+- Fixed importmap: `@rails/actioncable` should use `to: "actioncable.esm.js"` (was `@rails--actioncable.js`)
+- Fixed channel import: `user_notification_channel.js` should use `"channels/consumer"` not `"./consumer"` for importmap
+- Made CSRF token handling robust with optional chaining (`?.content || ""`)
+
+**System test issue:**
+- Test at `test/system/multi_device_dismiss_test.rb` gets to the point where incoming call shows on both Alice devices
+- But CSRF meta tag is missing from the page (possibly Turbo/morphing issue)
+- The Answer button click doesn't redirect because fetch fails without CSRF token
+- Test env has `allow_forgery_protection = false` so server doesn't need token, but JS was crashing on null
+- After the optional chaining fix, the fetch should work - need to re-run test
+
+**To continue:**
+1. Run `bin/rails test:system test/system/multi_device_dismiss_test.rb` to see if the CSRF fix worked
+2. If test passes, run full test suite and QA
+3. Clean up debug output from the test file
+4. cable.yml is set to `adapter: async` for test - this is needed for system tests
+
+---
+
+## Previous State
+
 Feature 09 (incoming-call-ui) completed. The codebase now has:
 - Call::AnswersController and Call::DeclinesController (RESTful resource controllers)
 - Incoming call Stimulus controller with overlay UI
