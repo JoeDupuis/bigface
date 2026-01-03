@@ -1,3 +1,11 @@
+alice_to_bob:
+  user: one
+  contact: two
+
+bob_to_alice:
+  user: two
+  contact: one
+
 alice_to_charlie:
   user: one
   contact: three

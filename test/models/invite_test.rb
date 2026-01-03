@@ -69,8 +69,6 @@ class InviteTest < ActiveSupport::TestCase
   test "cannot invite existing contact" do
     alice = users(:one)
     bob = users(:two)
-    Contact.create!(user: alice, contact: bob)
-    Contact.create!(user: bob, contact: alice)
 
     invite = Invite.new(
       sender: alice,
@@ -82,21 +80,21 @@ class InviteTest < ActiveSupport::TestCase
   end
 
   test "accept! creates contacts" do
-    alice = users(:one)
     bob = users(:two)
-    invite = Invite.create!(sender: alice, recipient_email: bob.email_address)
+    charlie = users(:three)
+    invite = Invite.create!(sender: bob, recipient_email: charlie.email_address)
 
-    invite.accept!(bob)
+    invite.accept!(charlie)
 
-    assert Contact.exists?(user: alice, contact: bob)
-    assert Contact.exists?(user: bob, contact: alice)
+    assert Contact.exists?(user: bob, contact: charlie)
+    assert Contact.exists?(user: charlie, contact: bob)
     assert invite.accepted_at.present?
   end
 
   test "accepted? returns true when accepted" do
-    alice = users(:one)
     bob = users(:two)
-    invite = Invite.create!(sender: alice, recipient_email: bob.email_address)
+    charlie = users(:three)
+    invite = Invite.create!(sender: bob, recipient_email: charlie.email_address)
     invite.update!(accepted_at: Time.current)
 
     assert invite.accepted?
@@ -109,17 +107,17 @@ class InviteTest < ActiveSupport::TestCase
   end
 
   test "pending_for returns matching invites" do
-    alice = users(:one)
     bob = users(:two)
-    pending_to_bob = Invite.create!(sender: alice, recipient_email: bob.email_address)
-    Invite.create!(sender: bob, recipient_email: alice.email_address)
-    accepted_to_bob = Invite.create!(sender: alice, recipient_email: "temp@example.com")
-    accepted_to_bob.update!(accepted_at: Time.current)
-    accepted_to_bob.update_column(:recipient_email, bob.email_address)
+    charlie = users(:three)
+    pending_to_charlie = Invite.create!(sender: bob, recipient_email: charlie.email_address)
+    Invite.create!(sender: charlie, recipient_email: bob.email_address)
+    accepted_to_charlie = Invite.create!(sender: bob, recipient_email: "temp@example.com")
+    accepted_to_charlie.update!(accepted_at: Time.current)
+    accepted_to_charlie.update_column(:recipient_email, charlie.email_address)
 
-    result = Invite.pending_for(bob)
+    result = Invite.pending_for(charlie)
 
-    assert_includes result, pending_to_bob
-    assert_not_includes result, accepted_to_bob
+    assert_includes result, pending_to_charlie
+    assert_not_includes result, accepted_to_charlie
   end
 end

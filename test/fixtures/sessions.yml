@@ -1,0 +1,9 @@
+alice_session:
+  user: one
+  ip_address: "127.0.0.1"
+  user_agent: "Test Browser"
+
+bob_session:
+  user: two
+  ip_address: "127.0.0.1"
+  user_agent: "Test Browser"

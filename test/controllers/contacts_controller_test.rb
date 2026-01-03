@@ -13,8 +13,8 @@ class ContactsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "GET /contacts with no contacts" do
-    bob = users(:two)
-    sign_in_as(bob)
+    dan = users(:four)
+    sign_in_as(dan)
 
     get contacts_path
 

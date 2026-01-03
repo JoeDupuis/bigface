@@ -25,16 +25,18 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "POST /invites with existing user email shows same response" do
-    existing_user = users(:two)
+    bob = users(:two)
+    sign_in_as(bob)
+    charlie = users(:three)
 
     assert_difference "Invite.count", 1 do
       assert_enqueued_emails 1 do
-        post invites_path, params: { invite: { recipient_email: existing_user.email_address } }
+        post invites_path, params: { invite: { recipient_email: charlie.email_address } }
       end
     end
 
     assert_redirected_to root_path
-    assert_equal "Invite sent to #{existing_user.email_address}", flash[:notice]
+    assert_equal "Invite sent to #{charlie.email_address}", flash[:notice]
   end
 
   test "POST /invites with own email does not create invite" do
@@ -48,8 +50,6 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
 
   test "POST /invites with already-contact email does not create invite" do
     bob = users(:two)
-    Contact.create!(user: @user, contact: bob)
-    Contact.create!(user: bob, contact: @user)
 
     assert_no_difference "Invite.count" do
       post invites_path, params: { invite: { recipient_email: bob.email_address } }
@@ -59,16 +59,16 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "GET /invites when logged in shows pending invites for current user" do
+    charlie = users(:three)
+    sign_in_as(charlie)
     bob = users(:two)
-    sign_in_as(bob)
-    alice = users(:one)
-    invite_to_bob = Invite.create!(sender: alice, recipient_email: bob.email_address)
-    Invite.create!(sender: bob, recipient_email: "other@example.com")
+    invite_to_charlie = Invite.create!(sender: bob, recipient_email: charlie.email_address)
+    Invite.create!(sender: charlie, recipient_email: "other@example.com")
 
     get invites_path
 
     assert_response :success
-    assert_select "p", text: /Alice/
+    assert_select "p", text: /Bob/
   end
 
   test "GET /invites with no pending invites" do
@@ -96,10 +96,10 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "GET /invites/:token when logged in as wrong user returns 404" do
-    alice = users(:one)
     bob = users(:two)
-    invite = Invite.create!(sender: alice, recipient_email: bob.email_address)
-    sign_in_as(alice)
+    charlie = users(:three)
+    invite = Invite.create!(sender: bob, recipient_email: charlie.email_address)
+    sign_in_as(bob)
 
     get invite_path(invite.token)
 
@@ -107,24 +107,24 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "GET /invites/:token when logged in as correct user" do
-    alice = users(:one)
     bob = users(:two)
-    invite = Invite.create!(sender: alice, recipient_email: bob.email_address)
-    sign_in_as(bob)
+    charlie = users(:three)
+    invite = Invite.create!(sender: bob, recipient_email: charlie.email_address)
+    sign_in_as(charlie)
 
     get invite_path(invite.token)
 
     assert_response :success
-    assert_select "p", text: /Alice wants to connect with you/
+    assert_select "p", text: /Bob wants to connect with you/
     assert_select "input[type='submit'][value='Accept']"
     assert_select "input[type='submit'][value='Decline']"
   end
 
   test "PATCH /invites/:token accepts invite" do
-    alice = users(:one)
     bob = users(:two)
-    invite = Invite.create!(sender: alice, recipient_email: bob.email_address)
-    sign_in_as(bob)
+    charlie = users(:three)
+    invite = Invite.create!(sender: bob, recipient_email: charlie.email_address)
+    sign_in_as(charlie)
 
     assert_difference "Contact.count", 2 do
       patch invite_path(invite.token)
@@ -133,15 +133,15 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
     invite.reload
     assert invite.accepted_at.present?
     assert_redirected_to contacts_path
-    assert_equal "You are now connected with Alice!", flash[:notice]
+    assert_equal "You are now connected with Bob!", flash[:notice]
   end
 
   test "PATCH /invites/:token for already accepted invite" do
-    alice = users(:one)
     bob = users(:two)
-    invite = Invite.create!(sender: alice, recipient_email: bob.email_address)
-    invite.accept!(bob)
-    sign_in_as(bob)
+    charlie = users(:three)
+    invite = Invite.create!(sender: bob, recipient_email: charlie.email_address)
+    invite.accept!(charlie)
+    sign_in_as(charlie)
 
     assert_no_difference "Contact.count" do
       patch invite_path(invite.token)
@@ -152,10 +152,10 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "PATCH /invites/:token as wrong user returns 404" do
-    alice = users(:one)
     bob = users(:two)
-    invite = Invite.create!(sender: alice, recipient_email: bob.email_address)
-    sign_in_as(alice)
+    charlie = users(:three)
+    invite = Invite.create!(sender: bob, recipient_email: charlie.email_address)
+    sign_in_as(bob)
 
     patch invite_path(invite.token)
 
@@ -163,10 +163,10 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "DELETE /invites/:token declines invite" do
-    alice = users(:one)
     bob = users(:two)
-    invite = Invite.create!(sender: alice, recipient_email: bob.email_address)
-    sign_in_as(bob)
+    charlie = users(:three)
+    invite = Invite.create!(sender: bob, recipient_email: charlie.email_address)
+    sign_in_as(charlie)
 
     assert_difference "Invite.count", -1 do
       delete invite_path(invite.token)
@@ -177,10 +177,10 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "DELETE /invites/:token as wrong user returns 404" do
-    alice = users(:one)
     bob = users(:two)
-    invite = Invite.create!(sender: alice, recipient_email: bob.email_address)
-    sign_in_as(alice)
+    charlie = users(:three)
+    invite = Invite.create!(sender: bob, recipient_email: charlie.email_address)
+    sign_in_as(bob)
 
     delete invite_path(invite.token)
 
