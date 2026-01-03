@@ -1,3 +1,5 @@
+require "net/http"
+
 class TurnCredentials
   class ApiError < StandardError; end
 

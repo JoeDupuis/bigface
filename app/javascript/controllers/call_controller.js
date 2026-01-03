@@ -1,10 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
-import { WebRTCManager } from "../lib/webrtc_manager"
+import { WebRTCManager } from "lib/webrtc_manager"
 
 export default class extends Controller {
   static targets = ["localVideo", "remoteVideo", "remoteContainer", "status"]
-  static values = { callId: Number, role: String }
+  static values = { callId: Number, role: String, userId: Number }
 
   async connect() {
     await this.startLocalVideo()
@@ -36,9 +36,16 @@ export default class extends Controller {
     this.subscription = consumer.subscriptions.create(
       { channel: "CallChannel", call_id: this.callIdValue },
       {
+        connected: () => this.handleConnected(),
         received: (data) => this.handleSignaling(data)
       }
     )
+  }
+
+  handleConnected() {
+    if (this.roleValue === "recipient") {
+      this.subscription.send({ type: "ready" })
+    }
   }
 
   initializeWebRTC() {
@@ -64,12 +71,20 @@ export default class extends Controller {
   }
 
   handleSignaling(data) {
+    if (data.from === this.userIdValue) {
+      return
+    }
+
     switch (data.type) {
       case "answered":
-        this.initializeWebRTC()
-        this.webrtc.createOffer()
-        if (this.hasStatusTarget) {
+        if (this.roleValue === "caller" && this.hasStatusTarget) {
           this.statusTarget.textContent = "Connecting..."
+        }
+        break
+      case "ready":
+        if (this.roleValue === "caller") {
+          this.initializeWebRTC()
+          this.webrtc.createOffer()
         }
         break
       case "offer":
