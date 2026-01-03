@@ -5,6 +5,7 @@
     <% @contacts.each do |contact| %>
       <li>
         <%= contact.contact.name %>
+        <%= button_to "Call", calls_path(call: { recipient_id: contact.contact.id }), method: :post %>
         <%= button_to "Remove", contact, method: :delete,
             data: { turbo_confirm: "Remove #{contact.contact.name}?" } %>
       </li>

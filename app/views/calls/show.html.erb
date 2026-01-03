@@ -1,0 +1,14 @@
+<div id="call-container" data-controller="call" data-call-call-id-value="<%= @call.id %>" data-call-role-value="<%= @call.caller == Current.session.user ? 'caller' : 'recipient' %>">
+  <div id="local-video-container">
+    <video id="local-video" autoplay muted playsinline></video>
+  </div>
+
+  <% if @call.ringing? && @call.caller == Current.session.user %>
+    <p>Calling <%= @call.recipient.name %>...</p>
+    <%= button_to "Cancel", call_path(@call), method: :delete %>
+  <% end %>
+
+  <div id="remote-video-container" style="display: none;">
+    <video id="remote-video" autoplay playsinline></video>
+  </div>
+</div>

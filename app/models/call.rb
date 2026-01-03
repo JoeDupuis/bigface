@@ -10,6 +10,8 @@ class Call < ApplicationRecord
   validates :caller_id, uniqueness: { scope: :status, conditions: -> { ringing }, message: "already has a ringing call" }
   validate :caller_and_recipient_are_contacts
 
+  after_create_commit :broadcast_to_recipient
+
   def answer!(session)
     raise InvalidTransition unless ringing?
     update!(status: :active, started_at: Time.current, answered_by_session: session)
@@ -31,6 +33,15 @@ class Call < ApplicationRecord
   end
 
   private
+
+  def broadcast_to_recipient
+    UserNotificationChannel.broadcast_to(recipient, {
+      type: "incoming_call",
+      call_id: id,
+      caller_name: caller.name,
+      caller_id: caller.id
+    })
+  end
 
   def caller_and_recipient_are_contacts
     return if caller_id.blank? || recipient_id.blank?
