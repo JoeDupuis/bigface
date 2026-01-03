@@ -1,6 +1,10 @@
 class CallsController < ApplicationController
   before_action :set_call, only: %i[show]
 
+  def index
+    @calls = current_user_calls.order(created_at: :desc)
+  end
+
   def create
     @call = Current.session.user.outgoing_calls.build(call_params)
 
@@ -31,5 +35,12 @@ class CallsController < ApplicationController
   def participant?
     current_user = Current.session.user
     @call.caller == current_user || @call.recipient == current_user
+  end
+
+  def current_user_calls
+    user = Current.session.user
+    Call.where(caller: user)
+        .or(Call.where(recipient: user))
+        .where.not(status: :ringing)
   end
 end

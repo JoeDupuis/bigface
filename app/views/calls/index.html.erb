@@ -1,0 +1,26 @@
+<h1>Call History</h1>
+
+<% if @calls.any? %>
+  <ul>
+    <% @calls.each do |call| %>
+      <li>
+        <% other_user = call.caller == Current.session.user ? call.recipient : call.caller %>
+        <% direction = call.caller == Current.session.user ? "Outgoing" : "Incoming" %>
+
+        <%= link_to other_user.name, contacts_path %>
+        <span class="direction"><%= direction %></span>
+        <span class="outcome"><%= call.status.humanize %></span>
+
+        <% if call.ended? && call.started_at %>
+          <span class="duration"><%= format_duration(call.ended_at - call.started_at) %></span>
+        <% end %>
+
+        <span class="time"><%= time_ago_in_words(call.created_at) %> ago</span>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No calls yet.</p>
+<% end %>
+
+<%= link_to "Back to contacts", contacts_path %>

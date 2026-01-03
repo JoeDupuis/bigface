@@ -2,3 +2,33 @@ alice_calls_bob:
   caller: one
   recipient: two
   status: ringing
+
+alice_calls_bob_answered:
+  caller: one
+  recipient: two
+  status: ended
+  started_at: <%= 10.minutes.ago %>
+  ended_at: <%= 5.minutes.ago.change(usec: 30) %>
+  created_at: <%= 15.minutes.ago %>
+
+charlie_calls_alice_missed:
+  caller: three
+  recipient: one
+  status: missed
+  ended_at: <%= 8.minutes.ago %>
+  created_at: <%= 10.minutes.ago %>
+
+alice_calls_bob_declined:
+  caller: one
+  recipient: two
+  status: declined
+  ended_at: <%= 3.minutes.ago %>
+  created_at: <%= 5.minutes.ago %>
+
+bob_calls_charlie:
+  caller: two
+  recipient: three
+  status: ended
+  started_at: <%= 1.day.ago %>
+  ended_at: <%= 1.day.ago + 2.minutes %>
+  created_at: <%= 1.day.ago %>

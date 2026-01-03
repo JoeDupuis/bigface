@@ -2,25 +2,26 @@
 
 ## Current State
 
-Feature 06 (turn-credentials) completed. The codebase now has:
-- TurnCredentials model (plain Ruby class) that fetches TURN/STUN credentials from Cloudflare
-- GET /turn_credentials endpoint returning formatted ICE servers JSON
-- Caching with 1-hour expiration (credentials valid for 24h)
-- Added webmock gem for HTTP stubbing in tests
+Feature 11 (call-hangup) completed. The codebase now has:
+- `hangup!` method in Call model with proper state transitions
+- Call::HangupsController with create action
+- POST /calls/:id/hangup route
+- `call_cancelled` broadcast to recipient for ringing calls
+- `hangup` broadcast to CallChannel for active calls
+- JavaScript handlers for call-cancelled event
 
-Next: Pick 10-webrtc-connection (now unblocked), 14-call-log, or 11-call-hangup (needs 10).
+Next: Pick 14-call-log.md (the only remaining feature).
 
 ---
 
 ## Previous State
 
-Feature 13 (call-timeout) completed. The codebase now has:
-- CallTimeoutJob scheduled on call creation (2s in test, 30s in production)
-- Call#timeout! marks call as missed and broadcasts to both channels
-- call_controller.js subscribes to CallChannel, shows "No answer" on timeout
-- incoming_call_controller.js handles call-timeout event to dismiss overlay
-
-Next: Pick 06-turn-credentials (unblocks 10), 14-call-log, or 10-webrtc-connection (needs 06). Feature 11 (call-hangup) needs 10.
+Feature 10 (webrtc-connection) completed. The codebase now has:
+- WebRTCManager class in app/javascript/lib/webrtc_manager.js
+- Full WebRTC signaling via CallChannel (offer/answer/ICE candidates)
+- Updated call_controller.js with WebRTC integration
+- call-screen.css for video call layout (remote video center, local video corner)
+- End Call button for active calls
 
 ---
 
@@ -37,8 +38,8 @@ Next: Pick 06-turn-credentials (unblocks 10), 14-call-log, or 10-webrtc-connecti
 | 07 | call-model | Completed | 03 |
 | 08 | call-initiation | Completed | 04, 05, 07 |
 | 09 | incoming-call-ui | Completed | 05, 07, 08 |
-| 10 | webrtc-connection | Pending | 05, 06, 09 |
-| 11 | call-hangup | Pending | 10 |
+| 10 | webrtc-connection | Completed | 05, 06, 09 |
+| 11 | call-hangup | Completed | 10 |
 | 12 | multi-device-dismiss | Completed | 09 |
 | 13 | call-timeout | Completed | 08, 09 |
 | 14 | call-log | Pending | 07 |
@@ -46,6 +47,56 @@ Next: Pick 06-turn-credentials (unblocks 10), 14-call-log, or 10-webrtc-connecti
 ---
 
 ## Session History
+
+### Session 2026-01-02 (13)
+
+**Feature**: 11-call-hangup
+**Status**: Completed
+
+**What was done**:
+- Added `hangup!` method to Call model for both ringing and active calls
+- Added `broadcast_hangup` for active calls (broadcasts to CallChannel)
+- Added `broadcast_cancellation` for ringing calls (broadcasts to UserNotificationChannel)
+- Created Call::HangupsController with create action
+- Added nested `resource :hangup` route under calls
+- Updated user_notification_channel.js to handle `call_cancelled` message
+- Updated incoming_call_controller.js to listen for `call-cancelled` event
+- Updated call_controller.js endCall() to POST to /calls/:id/hangup endpoint
+- Updated calls/show.html.erb to use same endCall action for both Cancel and End Call
+- Added 6 controller tests and 5 model tests
+
+**Notes for next session**:
+- Feature 14 (call-log) is the only remaining feature
+- All other features are complete
+
+---
+
+### Session 2026-01-02 (12)
+
+**Feature**: 10-webrtc-connection
+**Status**: Completed
+
+**What was done**:
+- Created WebRTCManager class in app/javascript/lib/webrtc_manager.js
+- Handles RTCPeerConnection creation with ICE servers from TURN credentials
+- Creates/handles SDP offer/answer exchange
+- Exchanges ICE candidates for NAT traversal
+- Provides callbacks for remote stream and connection state changes
+- Updated call_controller.js to integrate WebRTCManager
+- Fetches TURN credentials on connect
+- Handles signaling messages (answered, offer, answer, ice_candidate, hangup, timeout, declined)
+- Added endCall action for hang up button
+- Updated calls/show.html.erb with proper Stimulus targets
+- Created call-screen.css for video call layout (RSCSS component)
+- Remote video centered, local video small in corner
+- End Call button for active calls
+
+**Notes for next session**:
+- Feature 11 (call-hangup) is now unblocked
+- Feature 14 (call-log) is also available
+- No JavaScript testing framework configured, but feature spec notes JS tests are optional
+
+---
 
 ### Session 2026-01-02 (11)
 
@@ -307,4 +358,4 @@ Next: Pick 06-turn-credentials (unblocks 10), 14-call-log, or 10-webrtc-connecti
 
 ## Suggested Next Feature
 
-Pick `10-webrtc-connection.md` (now unblocked), `14-call-log.md`, or proceed with `11-call-hangup.md` after 10 is done.
+Pick `11-call-hangup.md` (now unblocked) or `14-call-log.md`.

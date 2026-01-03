@@ -1,6 +1,53 @@
 require "test_helper"
 
 class CallsControllerTest < ActionDispatch::IntegrationTest
+  test "GET /calls shows call history" do
+    alice = users(:one)
+    sign_in_as(alice)
+
+    get calls_path
+
+    assert_response :success
+    assert_select "li", count: 3
+
+    assert_select "li", text: /Bob/
+    assert_select "li", text: /Charlie/
+    assert_select "li", text: /Outgoing/
+    assert_select "li", text: /Incoming/
+    assert_select "li", text: /Ended/
+    assert_select "li", text: /Missed/
+    assert_select "li", text: /Declined/
+    assert_select ".duration", text: /5:00/
+  end
+
+  test "GET /calls excludes other users calls" do
+    alice = users(:one)
+    sign_in_as(alice)
+
+    get calls_path
+
+    assert_response :success
+    refute_match "bob_calls_charlie", response.body
+    assert_select "li", count: 3
+  end
+
+  test "GET /calls orders by most recent" do
+    alice = users(:one)
+    sign_in_as(alice)
+
+    get calls_path
+
+    assert_response :success
+    names = response.body.scan(/<li[^>]*>.*?<a[^>]*>([^<]+)<\/a>/m).flatten
+    assert_equal [ "Bob", "Charlie", "Bob" ], names
+  end
+
+  test "GET /calls when not logged in redirects to login" do
+    get calls_path
+
+    assert_redirected_to new_session_path
+  end
+
   test "POST /calls with valid recipient creates call and redirects" do
     bob = users(:two)
     alice = users(:one)
