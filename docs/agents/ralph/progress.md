@@ -2,6 +2,18 @@
 
 ## Current State
 
+Feature 13 (call-timeout) completed. The codebase now has:
+- CallTimeoutJob scheduled on call creation (2s in test, 30s in production)
+- Call#timeout! marks call as missed and broadcasts to both channels
+- call_controller.js subscribes to CallChannel, shows "No answer" on timeout
+- incoming_call_controller.js handles call-timeout event to dismiss overlay
+
+Next: Pick 06-turn-credentials (unblocks 10), 14-call-log, or 10-webrtc-connection (needs 06). Feature 11 (call-hangup) needs 10.
+
+---
+
+## Previous State
+
 Feature 12 (multi-device-dismiss) completed. The codebase now has:
 - Call model broadcasts `call_answered` to UserNotificationChannel on answer
 - user_notification_channel.js dispatches "call-answered" custom event
@@ -9,18 +21,6 @@ Feature 12 (multi-device-dismiss) completed. The codebase now has:
 - Full system test using Capybara's using_session for multi-device scenario
 
 Next: Pick 10-webrtc-connection (needs 06), 13-call-timeout, or 14-call-log. Feature 06 (turn-credentials) is needed before 10.
-
----
-
-## Previous State
-
-Feature 09 (incoming-call-ui) completed. The codebase now has:
-- Call::AnswersController and Call::DeclinesController (RESTful resource controllers)
-- Incoming call Stimulus controller with overlay UI
-- Broadcasts to CallChannel on answer/decline
-- Full test coverage for controller actions and broadcasts
-
-Next: Pick 10-webrtc-connection (needs 06), 12-multi-device-dismiss, 13-call-timeout, or 14-call-log. Feature 06 (turn-credentials) is needed before 10.
 
 ---
 
@@ -40,12 +40,37 @@ Next: Pick 10-webrtc-connection (needs 06), 12-multi-device-dismiss, 13-call-tim
 | 10 | webrtc-connection | Pending | 05, 06, 09 |
 | 11 | call-hangup | Pending | 10 |
 | 12 | multi-device-dismiss | Completed | 09 |
-| 13 | call-timeout | Pending | 08, 09 |
+| 13 | call-timeout | Completed | 08, 09 |
 | 14 | call-log | Pending | 07 |
 
 ---
 
 ## Session History
+
+### Session 2026-01-02 (10)
+
+**Feature**: 13-call-timeout
+**Status**: Completed
+
+**What was done**:
+- Created CallTimeoutJob scheduled via after_create_commit callback
+- Added RING_TIMEOUT constant (2 seconds in test, 30 seconds in production)
+- Added Call#timeout! method that marks call as missed and broadcasts
+- Added broadcast_timeout to broadcast to CallChannel and UserNotificationChannel
+- Updated call_controller.js to subscribe to CallChannel and handle timeout
+- Updated incoming_call_controller.js to handle call-timeout event
+- Updated user_notification_channel.js to dispatch call-timeout event
+- Added status target to calls/show.html.erb for "No answer" message
+- Created test/jobs/call_timeout_job_test.rb with 5 tests
+- Added 6 tests to test/models/call_test.rb for timeout functionality
+
+**Notes for next session**:
+- Feature 14 (call-log) is available (dependency 07 satisfied)
+- Feature 06 (turn-credentials) has no dependencies, unblocks 10
+- Feature 10 (webrtc-connection) needs 06 first
+- Feature 11 (call-hangup) needs 10
+
+---
 
 ### Session 2026-01-02 (9)
 
@@ -258,4 +283,4 @@ Next: Pick 10-webrtc-connection (needs 06), 12-multi-device-dismiss, 13-call-tim
 
 ## Suggested Next Feature
 
-Pick `12-multi-device-dismiss.md`, `13-call-timeout.md`, or `14-call-log.md` (all unblocked). For WebRTC, do `06-turn-credentials.md` first to unblock `10-webrtc-connection.md`.
+Pick `06-turn-credentials.md` (unblocks 10), `14-call-log.md`, or proceed with `10-webrtc-connection.md` after 06 is done.

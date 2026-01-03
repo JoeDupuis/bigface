@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resource :session
+  resource :turn_credentials, only: [ :show ]
   resources :passwords, param: :token
   resources :invites, only: [ :index, :new, :create, :show, :update, :destroy ], param: :token
   resources :contacts, only: [ :index, :destroy ]

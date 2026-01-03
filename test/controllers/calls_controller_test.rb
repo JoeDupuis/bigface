@@ -85,8 +85,10 @@ class CallsControllerTest < ActionDispatch::IntegrationTest
     alice = users(:one)
     sign_in_as(bob)
 
-    assert_broadcasts(UserNotificationChannel.broadcasting_for(alice), 1) do
-      post calls_path, params: { call: { recipient_id: alice.id } }
+    with_test_cable_adapter do
+      assert_broadcasts(UserNotificationChannel.broadcasting_for(alice), 1) do
+        post calls_path, params: { call: { recipient_id: alice.id } }
+      end
     end
   end
 
@@ -161,8 +163,10 @@ class CallsControllerTest < ActionDispatch::IntegrationTest
     bob_session = sessions(:bob_session)
     sign_in_as(bob, session: bob_session)
 
-    assert_broadcasts(CallChannel.broadcasting_for(call), 1) do
-      post call_answer_path(call)
+    with_test_cable_adapter do
+      assert_broadcasts(CallChannel.broadcasting_for(call), 1) do
+        post call_answer_path(call)
+      end
     end
   end
 
@@ -171,8 +175,10 @@ class CallsControllerTest < ActionDispatch::IntegrationTest
     bob = users(:two)
     sign_in_as(bob)
 
-    assert_broadcasts(CallChannel.broadcasting_for(call), 1) do
-      post call_decline_path(call)
+    with_test_cable_adapter do
+      assert_broadcasts(CallChannel.broadcasting_for(call), 1) do
+        post call_decline_path(call)
+      end
     end
   end
 end
