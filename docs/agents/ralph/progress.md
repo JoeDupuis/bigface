@@ -2,14 +2,14 @@
 
 ## Current State
 
-Feature 07 (call-model) completed. The codebase now has:
-- Full Call model with state transitions (answer!, end!, decline!, miss!)
-- Status enum: ringing, active, ended, missed, declined
-- Validations: caller uniqueness for ringing calls, contacts requirement
-- User associations: outgoing_calls, incoming_calls
-- Test fixtures: sessions, Dan user, Alice-Bob contacts
+Feature 08 (call-initiation) completed. The codebase now has:
+- CallsController with create/show actions
+- Call broadcast to recipient via UserNotificationChannel on create
+- Call show view with Stimulus controller for video preview
+- Call button on contacts list
+- Full test coverage for controller and integration
 
-Next: Pick 06-turn-credentials (WebRTC infrastructure) or 08-call-initiation (now unblocked). Feature 14 (call-log) is also now unblocked.
+Next: Pick 09-incoming-call-ui (now unblocked) or 06-turn-credentials (for WebRTC infrastructure). Features 12, 13, and 14 are also options.
 
 ---
 
@@ -24,7 +24,7 @@ Next: Pick 06-turn-credentials (WebRTC infrastructure) or 08-call-initiation (no
 | 05 | action-cable-setup | Completed | None |
 | 06 | turn-credentials | Pending | None |
 | 07 | call-model | Completed | 03 |
-| 08 | call-initiation | Pending | 04, 05, 07 |
+| 08 | call-initiation | Completed | 04, 05, 07 |
 | 09 | incoming-call-ui | Pending | 05, 07, 08 |
 | 10 | webrtc-connection | Pending | 05, 06, 09 |
 | 11 | call-hangup | Pending | 10 |
@@ -35,6 +35,29 @@ Next: Pick 06-turn-credentials (WebRTC infrastructure) or 08-call-initiation (no
 ---
 
 ## Session History
+
+### Session 2026-01-02 (7)
+
+**Feature**: 08-call-initiation
+**Status**: Completed
+
+**What was done**:
+- Created CallsController with create and show actions
+- Added after_create_commit callback to Call model for broadcasting
+- Created calls/show.html.erb with Stimulus controller data attributes
+- Added Call button to contacts/index.html.erb
+- Created Stimulus call_controller.js for video preview
+- Added calls routes (create, show)
+- Created controller tests for all spec requirements
+- Created integration test for start call flow
+
+**Notes for next session**:
+- Feature 09 (incoming-call-ui) is now unblocked (dependencies 05, 07, 08 complete)
+- Feature 12 (multi-device-dismiss) and 13 (call-timeout) depend on 09
+- Feature 06 (turn-credentials) still has no dependencies
+- Existing fixture alice_calls_bob is ringing, use Bob as caller in tests to avoid conflict
+
+---
 
 ### Session 2026-01-02 (6)
 
@@ -177,4 +200,4 @@ Next: Pick 06-turn-credentials (WebRTC infrastructure) or 08-call-initiation (no
 
 ## Suggested Next Feature
 
-Pick `06-turn-credentials.md` for WebRTC infrastructure or `08-call-initiation.md` to start the calling flow. Feature 08 is now fully unblocked.
+Pick `09-incoming-call-ui.md` to continue the calling flow (now unblocked), or `06-turn-credentials.md` for WebRTC infrastructure. Feature 14 (call-log) is also unblocked.
