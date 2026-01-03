@@ -2,14 +2,14 @@
 
 ## Current State
 
-Feature 04 (contact-list) completed. The codebase now has:
-- Full contact list UI with remove functionality
-- ContactsController with index and destroy actions
-- Mutual contact removal in a transaction
-- Turbo confirmation for remove action
-- Empty state with invite link
+Feature 05 (action-cable-setup) completed. The codebase now has:
+- Action Cable connection authentication via session cookie
+- UserNotificationChannel for per-user real-time notifications
+- CallChannel for per-call WebRTC signaling
+- JavaScript consumer and user notification channel setup
+- Call model (minimal version created for channel tests)
 
-Next: Pick from 05-action-cable-setup, 06-turn-credentials, or 07-call-model. Feature 08 (call-initiation) now has dependencies 04 satisfied; still needs 05 and 07.
+Next: Pick from 06-turn-credentials or 07-call-model. Feature 07 will flesh out the Call model with full functionality. Feature 08 (call-initiation) still needs 07.
 
 ---
 
@@ -21,7 +21,7 @@ Next: Pick from 05-action-cable-setup, 06-turn-credentials, or 07-call-model. Fe
 | 02 | invite-model | Completed | 01 |
 | 03 | invite-accept | Completed | 02 |
 | 04 | contact-list | Completed | 03 |
-| 05 | action-cable-setup | Pending | None |
+| 05 | action-cable-setup | Completed | None |
 | 06 | turn-credentials | Pending | None |
 | 07 | call-model | Pending | 03 |
 | 08 | call-initiation | Pending | 04, 05, 07 |
@@ -35,6 +35,32 @@ Next: Pick from 05-action-cable-setup, 06-turn-credentials, or 07-call-model. Fe
 ---
 
 ## Session History
+
+### Session 2026-01-02 (5)
+
+**Feature**: 05-action-cable-setup
+**Status**: Completed
+
+**What was done**:
+- Created ApplicationCable::Channel base class
+- Created UserNotificationChannel that streams for current_user
+- Created CallChannel with authorization for caller/recipient only
+- CallChannel receive method relays messages with `from` field
+- Added @rails/actioncable to importmap
+- Created JavaScript consumer and user_notification_channel files
+- Created Call model migration with full schema (for channel tests)
+- Created minimal Call model with belongs_to associations
+- Added calls fixture for tests
+- Created connection tests (auth, rejection)
+- Created channel tests for UserNotification and Call channels
+
+**Notes for next session**:
+- Call model exists but is minimal - feature 07 will add validations and state transitions
+- Feature 07 (call-model) now has the table but needs full implementation
+- Feature 06 (turn-credentials) has no dependencies
+- Feature 08 (call-initiation) still needs 07
+
+---
 
 ### Session 2026-01-02 (4)
 
@@ -125,4 +151,4 @@ Next: Pick from 05-action-cable-setup, 06-turn-credentials, or 07-call-model. Fe
 
 ## Suggested Next Feature
 
-Pick `05-action-cable-setup.md` to enable real-time features, `06-turn-credentials.md` for WebRTC infrastructure, or `07-call-model.md` to start on calling data model.
+Pick `06-turn-credentials.md` for WebRTC infrastructure or `07-call-model.md` to complete the Call model with state transitions and validations. Note: Feature 07's migration is already done from feature 05, so it just needs the model logic.
