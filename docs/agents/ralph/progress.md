@@ -2,14 +2,13 @@
 
 ## Current State
 
-Feature 08 (call-initiation) completed. The codebase now has:
-- CallsController with create/show actions
-- Call broadcast to recipient via UserNotificationChannel on create
-- Call show view with Stimulus controller for video preview
-- Call button on contacts list
-- Full test coverage for controller and integration
+Feature 09 (incoming-call-ui) completed. The codebase now has:
+- Call::AnswersController and Call::DeclinesController (RESTful resource controllers)
+- Incoming call Stimulus controller with overlay UI
+- Broadcasts to CallChannel on answer/decline
+- Full test coverage for controller actions and broadcasts
 
-Next: Pick 09-incoming-call-ui (now unblocked) or 06-turn-credentials (for WebRTC infrastructure). Features 12, 13, and 14 are also options.
+Next: Pick 10-webrtc-connection (needs 06), 12-multi-device-dismiss, 13-call-timeout, or 14-call-log. Feature 06 (turn-credentials) is needed before 10.
 
 ---
 
@@ -25,7 +24,7 @@ Next: Pick 09-incoming-call-ui (now unblocked) or 06-turn-credentials (for WebRT
 | 06 | turn-credentials | Pending | None |
 | 07 | call-model | Completed | 03 |
 | 08 | call-initiation | Completed | 04, 05, 07 |
-| 09 | incoming-call-ui | Pending | 05, 07, 08 |
+| 09 | incoming-call-ui | Completed | 05, 07, 08 |
 | 10 | webrtc-connection | Pending | 05, 06, 09 |
 | 11 | call-hangup | Pending | 10 |
 | 12 | multi-device-dismiss | Pending | 09 |
@@ -35,6 +34,29 @@ Next: Pick 09-incoming-call-ui (now unblocked) or 06-turn-credentials (for WebRT
 ---
 
 ## Session History
+
+### Session 2026-01-02 (8)
+
+**Feature**: 09-incoming-call-ui
+**Status**: Completed
+
+**What was done**:
+- Created Call::AnswersController with create action (RESTful)
+- Created Call::DeclinesController with create action (RESTful)
+- Added nested routes: POST /calls/:call_id/answer and /decline
+- Added broadcast_answered and broadcast_declined to Call model
+- Created incoming_call Stimulus controller
+- Created incoming-call-overlay CSS component (RSCSS)
+- Added incoming call UI to application layout
+- Updated SessionTestHelper to accept optional session parameter
+- Full test coverage for answer/decline actions and broadcasts
+
+**Notes for next session**:
+- Features 12 (multi-device-dismiss) and 13 (call-timeout) are now unblocked
+- Feature 10 (webrtc-connection) needs 06 (turn-credentials) first
+- Feature 14 (call-log) is also available
+
+---
 
 ### Session 2026-01-02 (7)
 
@@ -200,4 +222,4 @@ Next: Pick 09-incoming-call-ui (now unblocked) or 06-turn-credentials (for WebRT
 
 ## Suggested Next Feature
 
-Pick `09-incoming-call-ui.md` to continue the calling flow (now unblocked), or `06-turn-credentials.md` for WebRTC infrastructure. Feature 14 (call-log) is also unblocked.
+Pick `12-multi-device-dismiss.md`, `13-call-timeout.md`, or `14-call-log.md` (all unblocked). For WebRTC, do `06-turn-credentials.md` first to unblock `10-webrtc-connection.md`.
