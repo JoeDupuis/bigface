@@ -28,6 +28,15 @@
       <%= render "application/flash_messages" %>
     </div>
 
+    <% if authenticated? %>
+      <nav class="nav-header">
+        <%= link_to "Contacts", contacts_path %>
+        <%= link_to "Call History", calls_path %>
+        <%= link_to "Invite", new_invite_path %>
+        <%= button_to "Logout", session_path, method: :delete %>
+      </nav>
+    <% end %>
+
     <%= yield %>
 
     <div class="incoming-call-overlay hidden"

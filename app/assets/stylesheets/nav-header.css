@@ -1,0 +1,41 @@
+.nav-header {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+
+  & > a {
+    color: var(--color-white-alpha-80);
+    transition: color var(--transition-fast);
+
+    &:hover {
+      color: var(--color-white);
+      text-decoration: none;
+    }
+
+    &.-active {
+      color: var(--color-accent);
+    }
+  }
+
+  & > form {
+    display: inline;
+
+    & > button {
+      background: none;
+      border: none;
+      color: var(--color-white-alpha-80);
+      font-size: inherit;
+      cursor: pointer;
+      padding: 0;
+      transition: color var(--transition-fast);
+
+      &:hover {
+        color: var(--color-white);
+      }
+    }
+  }
+}
