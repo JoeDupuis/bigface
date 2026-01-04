@@ -59,6 +59,7 @@ group :development do
   gem "web-console"
   gem "hotwire-spark"
   gem "letter_opener_web", "~> 3.0"
+  gem "launchy"
   gem "mission_control-jobs"
 end
 
