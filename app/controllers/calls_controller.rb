@@ -19,6 +19,8 @@ class CallsController < ApplicationController
     if @call.nil? || !participant?
       head :not_found
       nil
+    elsif @call.ended? || @call.missed? || @call.declined?
+      redirect_to contacts_path
     end
   end
 

@@ -46,4 +46,40 @@ class CallChannelTest < ActionCable::Channel::TestCase
       "from" => call.caller.id
     })
   end
+
+  test "unsubscribing from active call triggers hangup" do
+    call = calls(:alice_calls_bob_answered)
+    call.update!(status: :active)
+    stub_connection current_user: call.caller
+
+    subscribe call_id: call.id
+    assert subscription.confirmed?
+
+    unsubscribe
+
+    call.reload
+    assert_equal "ended", call.status
+  end
+
+  test "unsubscribing from ringing call triggers hangup" do
+    call = calls(:alice_calls_bob)
+    stub_connection current_user: call.caller
+
+    subscribe call_id: call.id
+    assert subscription.confirmed?
+
+    unsubscribe
+
+    call.reload
+    assert_equal "ended", call.status
+  end
+
+  test "subscribing to ended call is rejected" do
+    call = calls(:alice_calls_bob_answered)
+    stub_connection current_user: call.caller
+
+    subscribe call_id: call.id
+
+    assert subscription.rejected?
+  end
 end

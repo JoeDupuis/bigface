@@ -1,11 +1,16 @@
 class CallChannel < ApplicationCable::Channel
   def subscribed
     @call = Call.find(params[:call_id])
-    if authorized?
+    if authorized? && (@call.ringing? || @call.active?)
       stream_for @call
     else
       reject
     end
+  end
+
+  def unsubscribed
+    @call&.reload&.hangup!
+  rescue ActiveRecord::RecordNotFound
   end
 
   def receive(data)

@@ -4,7 +4,7 @@ import { WebRTCManager } from "lib/webrtc_manager"
 
 export default class extends Controller {
   static targets = ["localVideo", "remoteVideo", "remoteContainer", "localContainer", "status", "switchCameraButton", "controls", "cancelButton", "endCallButton"]
-  static values = { callId: Number, role: String, userId: Number }
+  static values = { callId: Number, role: String, userId: Number, status: String }
 
   currentFacingMode = "user"
   hideControlsTimer = null
@@ -18,6 +18,10 @@ export default class extends Controller {
   initialTop = 0
 
   async connect() {
+    if (this.statusValue === "ended" || this.statusValue === "missed" || this.statusValue === "declined") {
+      window.location.href = "/contacts"
+      return
+    }
     await this.startLocalVideo()
     await this.fetchTurnCredentials()
     await this.checkMultipleCameras()
@@ -95,9 +99,14 @@ export default class extends Controller {
       { channel: "CallChannel", call_id: this.callIdValue },
       {
         connected: () => this.handleConnected(),
+        rejected: () => this.handleRejected(),
         received: (data) => this.handleSignaling(data)
       }
     )
+  }
+
+  handleRejected() {
+    window.location.href = "/contacts"
   }
 
   handleConnected() {
