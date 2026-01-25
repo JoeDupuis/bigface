@@ -3,21 +3,70 @@ import consumer from "channels/consumer"
 import { WebRTCManager } from "lib/webrtc_manager"
 
 export default class extends Controller {
-  static targets = ["localVideo", "remoteVideo", "remoteContainer", "status"]
+  static targets = ["localVideo", "remoteVideo", "remoteContainer", "status", "switchCameraButton"]
   static values = { callId: Number, role: String, userId: Number }
+
+  currentFacingMode = "user"
 
   async connect() {
     await this.startLocalVideo()
     await this.fetchTurnCredentials()
+    await this.checkMultipleCameras()
     this.subscribeToChannel()
   }
 
-  async startLocalVideo() {
+  async checkMultipleCameras() {
     try {
-      this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      const videoInputs = devices.filter(d => d.kind === "videoinput")
+      if (videoInputs.length > 1 && this.hasSwitchCameraButtonTarget) {
+        this.switchCameraButtonTarget.classList.remove("hidden")
+      }
+    } catch (error) {
+      console.error("Failed to enumerate devices:", error)
+    }
+  }
+
+  async startLocalVideo(facingMode = "user") {
+    try {
+      this.localStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facingMode },
+        audio: true
+      })
       this.localVideoTarget.srcObject = this.localStream
+      this.currentFacingMode = facingMode
     } catch (error) {
       console.error("Failed to access camera/microphone:", error)
+    }
+  }
+
+  async switchCamera() {
+    const newFacingMode = this.currentFacingMode === "user" ? "environment" : "user"
+
+    try {
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: newFacingMode },
+        audio: false
+      })
+
+      const newVideoTrack = newStream.getVideoTracks()[0]
+      const oldVideoTrack = this.localStream.getVideoTracks()[0]
+
+      if (oldVideoTrack) {
+        oldVideoTrack.stop()
+        this.localStream.removeTrack(oldVideoTrack)
+      }
+
+      this.localStream.addTrack(newVideoTrack)
+      this.localVideoTarget.srcObject = this.localStream
+
+      if (this.webrtc) {
+        this.webrtc.replaceVideoTrack(newVideoTrack)
+      }
+
+      this.currentFacingMode = newFacingMode
+    } catch (error) {
+      console.error("Failed to switch camera:", error)
     }
   }
 

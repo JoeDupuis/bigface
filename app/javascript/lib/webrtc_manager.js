@@ -72,6 +72,13 @@ export class WebRTCManager {
     }
   }
 
+  async replaceVideoTrack(newTrack) {
+    const sender = this.peerConnection?.getSenders().find(s => s.track?.kind === "video")
+    if (sender) {
+      await sender.replaceTrack(newTrack)
+    }
+  }
+
   close() {
     this.peerConnection?.close()
     this.localStream?.getTracks().forEach(t => t.stop())

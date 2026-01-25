@@ -60,6 +60,12 @@
     margin: 0;
   }
 
+  & > .controls > .actions {
+    display: flex;
+    gap: var(--space-md);
+  }
+
+  & > .controls > .actions > .button,
   & > .controls > .button,
   & > .controls > form > .button {
     padding: var(--space-md) var(--space-xl);
@@ -70,19 +76,36 @@
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   }
 
+  & > .controls > .actions > .button:hover,
   & > .controls > .button:hover,
   & > .controls > form > .button:hover {
     transform: scale(1.05);
   }
 
+  & > .controls > .actions > .button.-danger,
   & > .controls > .button.-danger,
   & > .controls > form > .button.-danger {
     background: var(--color-danger);
     color: var(--color-white);
   }
 
+  & > .controls > .actions > .button.-danger:hover,
   & > .controls > .button.-danger:hover,
   & > .controls > form > .button.-danger:hover {
     box-shadow: var(--glow-danger);
+  }
+
+  & > .controls > .actions > .button.-secondary {
+    background: var(--color-white-alpha-20);
+    color: var(--color-white);
+    backdrop-filter: blur(10px);
+  }
+
+  & > .controls > .actions > .button.-secondary:hover {
+    background: var(--color-white-alpha-30);
+  }
+
+  & > .controls > .actions > .button.hidden {
+    display: none;
   }
 }

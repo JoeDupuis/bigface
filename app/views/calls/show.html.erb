@@ -16,10 +16,13 @@
       <% end %>
     </p>
 
-    <% if @call.ringing? && @call.caller == Current.session.user %>
-      <button data-action="call#endCall" class="button -danger">Cancel</button>
-    <% elsif @call.active? %>
-      <button data-action="call#endCall" class="button -danger">End Call</button>
-    <% end %>
+    <div class="actions">
+      <% if @call.ringing? && @call.caller == Current.session.user %>
+        <button data-action="call#endCall" class="button -danger">Cancel</button>
+      <% elsif @call.active? %>
+        <button data-action="call#switchCamera" data-call-target="switchCameraButton" class="button -secondary hidden">Switch Camera</button>
+        <button data-action="call#endCall" class="button -danger">End Call</button>
+      <% end %>
+    </div>
   </div>
 </div>
