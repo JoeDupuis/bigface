@@ -30,7 +30,7 @@
     bottom: calc(var(--space-2xl) + 80px);
     right: var(--space-lg);
     width: 150px;
-    height: 200px;
+    aspect-ratio: var(--local-video-aspect-ratio, 3/4);
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-lg);

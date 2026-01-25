@@ -47,9 +47,18 @@ export default class extends Controller {
         audio: true
       })
       this.localVideoTarget.srcObject = this.localStream
+      this.localVideoTarget.onloadedmetadata = () => this.updateLocalVideoAspectRatio()
       this.currentFacingMode = facingMode
     } catch (error) {
       console.error("Failed to access camera/microphone:", error)
+    }
+  }
+
+  updateLocalVideoAspectRatio() {
+    const video = this.localVideoTarget
+    if (video.videoWidth && video.videoHeight) {
+      const aspectRatio = video.videoWidth / video.videoHeight
+      this.localContainerTarget.style.setProperty("--local-video-aspect-ratio", aspectRatio)
     }
   }
 
@@ -72,6 +81,7 @@ export default class extends Controller {
 
       this.localStream.addTrack(newVideoTrack)
       this.localVideoTarget.srcObject = this.localStream
+      this.localVideoTarget.onloadedmetadata = () => this.updateLocalVideoAspectRatio()
 
       if (this.webrtc) {
         this.webrtc.replaceVideoTrack(newVideoTrack)
