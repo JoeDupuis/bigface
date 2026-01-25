@@ -9,6 +9,8 @@ export default class extends Controller {
   currentFacingMode = "user"
   hideControlsTimer = null
   isConnected = false
+  feedsSwapped = false
+  lastLocalTap = 0
 
   async connect() {
     await this.startLocalVideo()
@@ -224,6 +226,30 @@ export default class extends Controller {
     event.preventDefault()
     event.stopImmediatePropagation()
     this.toggleControls()
+  }
+
+  handleLocalTap(event) {
+    if (event.pointerType !== "touch") return
+    event.preventDefault()
+    event.stopPropagation()
+
+    const now = Date.now()
+    if (now - this.lastLocalTap < 300) {
+      this.swapFeeds()
+      this.lastLocalTap = 0
+    } else {
+      this.lastLocalTap = now
+    }
+  }
+
+  swapFeeds() {
+    const localStream = this.localVideoTarget.srcObject
+    const remoteStream = this.remoteVideoTarget.srcObject
+    if (!remoteStream) return
+
+    this.localVideoTarget.srcObject = remoteStream
+    this.remoteVideoTarget.srcObject = localStream
+    this.feedsSwapped = !this.feedsSwapped
   }
 
   showControls() {
