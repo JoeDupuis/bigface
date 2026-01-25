@@ -1,4 +1,4 @@
-<div class="call-screen" data-controller="call" data-call-call-id-value="<%= @call.id %>" data-call-role-value="<%= @call.caller == Current.session.user ? 'caller' : 'recipient' %>" data-call-user-id-value="<%= Current.session.user.id %>">
+<div class="call-screen" data-controller="call" data-call-call-id-value="<%= @call.id %>" data-call-role-value="<%= @call.caller == Current.session.user ? 'caller' : 'recipient' %>" data-call-user-id-value="<%= Current.session.user.id %>" data-action="pointermove->call#handleMouseMove pointerup->call#handleTap">
   <div class="remote" data-call-target="remoteContainer">
     <video data-call-target="remoteVideo" autoplay playsinline></video>
   </div>
@@ -7,7 +7,7 @@
     <video data-call-target="localVideo" autoplay muted playsinline></video>
   </div>
 
-  <div class="controls">
+  <div class="controls" data-call-target="controls" data-action="click->call#resetHideTimer">
     <p data-call-target="status">
       <% if @call.ringing? && @call.caller == Current.session.user %>
         Calling <%= @call.recipient.name %>...
