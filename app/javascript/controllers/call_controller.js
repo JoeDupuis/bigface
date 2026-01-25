@@ -192,5 +192,12 @@ export default class extends Controller {
   disconnect() {
     this.webrtc?.close()
     this.subscription?.unsubscribe()
+    this.localStream?.getTracks().forEach(t => t.stop())
+    if (this.hasLocalVideoTarget) {
+      this.localVideoTarget.srcObject = null
+    }
+    if (this.hasRemoteVideoTarget) {
+      this.remoteVideoTarget.srcObject = null
+    }
   }
 }
