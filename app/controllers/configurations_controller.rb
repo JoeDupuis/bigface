@@ -29,6 +29,7 @@ class ConfigurationsController < ApplicationController
         {
           patterns: [ "/calls/\\d+$" ],
           properties: {
+            uri: "hotwire://fragment/call",
             pull_to_refresh_enabled: false
           }
         },
