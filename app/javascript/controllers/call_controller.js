@@ -3,7 +3,7 @@ import consumer from "channels/consumer"
 import { WebRTCManager } from "lib/webrtc_manager"
 
 export default class extends Controller {
-  static targets = ["localVideo", "remoteVideo", "remoteContainer", "status", "switchCameraButton", "controls", "cancelButton", "endCallButton"]
+  static targets = ["localVideo", "remoteVideo", "remoteContainer", "localContainer", "status", "switchCameraButton", "controls", "cancelButton", "endCallButton"]
   static values = { callId: Number, role: String, userId: Number }
 
   currentFacingMode = "user"
@@ -11,6 +11,11 @@ export default class extends Controller {
   isConnected = false
   feedsSwapped = false
   lastLocalTap = 0
+  isDragging = false
+  dragStartX = 0
+  dragStartY = 0
+  initialLeft = 0
+  initialTop = 0
 
   async connect() {
     await this.startLocalVideo()
@@ -233,6 +238,11 @@ export default class extends Controller {
     event.preventDefault()
     event.stopPropagation()
 
+    if (this.isDragging) {
+      this.isDragging = false
+      return
+    }
+
     const now = Date.now()
     if (now - this.lastLocalTap < 300) {
       this.swapFeeds()
@@ -250,6 +260,67 @@ export default class extends Controller {
     this.localVideoTarget.srcObject = remoteStream
     this.remoteVideoTarget.srcObject = localStream
     this.feedsSwapped = !this.feedsSwapped
+  }
+
+  startDrag(event) {
+    if (event.pointerType === "mouse" && event.button !== 0) return
+
+    const container = this.localContainerTarget
+    const rect = container.getBoundingClientRect()
+
+    container.style.right = "auto"
+    container.style.bottom = "auto"
+    container.style.left = `${rect.left}px`
+    container.style.top = `${rect.top}px`
+
+    this.isDragging = false
+    this.dragStartX = event.clientX
+    this.dragStartY = event.clientY
+    this.initialLeft = rect.left
+    this.initialTop = rect.top
+
+    container.classList.add("-dragging")
+    container.setPointerCapture(event.pointerId)
+
+    this.boundDrag = this.drag.bind(this)
+    this.boundStopDrag = this.stopDrag.bind(this)
+    container.addEventListener("pointermove", this.boundDrag)
+    container.addEventListener("pointerup", this.boundStopDrag)
+    container.addEventListener("pointercancel", this.boundStopDrag)
+  }
+
+  drag(event) {
+    const dx = event.clientX - this.dragStartX
+    const dy = event.clientY - this.dragStartY
+
+    if (!this.isDragging && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+      this.isDragging = true
+    }
+
+    if (!this.isDragging) return
+
+    const container = this.localContainerTarget
+    const containerWidth = container.offsetWidth
+    const containerHeight = container.offsetHeight
+
+    let newLeft = this.initialLeft + dx
+    let newTop = this.initialTop + dy
+
+    newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - containerWidth))
+    newTop = Math.max(0, Math.min(newTop, window.innerHeight - containerHeight))
+
+    container.style.left = `${newLeft}px`
+    container.style.top = `${newTop}px`
+  }
+
+  stopDrag(event) {
+    const container = this.localContainerTarget
+    container.classList.remove("-dragging")
+    container.releasePointerCapture(event.pointerId)
+
+    container.removeEventListener("pointermove", this.boundDrag)
+    container.removeEventListener("pointerup", this.boundStopDrag)
+    container.removeEventListener("pointercancel", this.boundStopDrag)
   }
 
   showControls() {

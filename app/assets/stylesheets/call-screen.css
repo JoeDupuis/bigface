@@ -35,6 +35,12 @@
     overflow: hidden;
     box-shadow: var(--shadow-lg);
     border: 2px solid var(--color-white-alpha-30);
+    touch-action: none;
+    cursor: grab;
+  }
+
+  & > .local.-dragging {
+    cursor: grabbing;
   }
 
   & > .local > video {
