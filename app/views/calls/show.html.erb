@@ -17,8 +17,10 @@
     </p>
 
     <div class="actions">
-      <% if @call.ringing? && @call.caller == Current.session.user %>
-        <button data-action="call#endCall" class="button -danger">Cancel</button>
+      <% if @call.caller == Current.session.user %>
+        <button data-action="call#switchCamera" data-call-target="switchCameraButton" class="button -secondary hidden">Switch Camera</button>
+        <button data-action="call#endCall" data-call-target="cancelButton" class="button -danger <%= 'hidden' unless @call.ringing? %>">Cancel</button>
+        <button data-action="call#endCall" data-call-target="endCallButton" class="button -danger <%= 'hidden' if @call.ringing? %>">End Call</button>
       <% elsif @call.active? %>
         <button data-action="call#switchCamera" data-call-target="switchCameraButton" class="button -secondary hidden">Switch Camera</button>
         <button data-action="call#endCall" class="button -danger">End Call</button>

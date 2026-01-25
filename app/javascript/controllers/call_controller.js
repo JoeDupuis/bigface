@@ -3,7 +3,7 @@ import consumer from "channels/consumer"
 import { WebRTCManager } from "lib/webrtc_manager"
 
 export default class extends Controller {
-  static targets = ["localVideo", "remoteVideo", "remoteContainer", "status", "switchCameraButton", "controls"]
+  static targets = ["localVideo", "remoteVideo", "remoteContainer", "status", "switchCameraButton", "controls", "cancelButton", "endCallButton"]
   static values = { callId: Number, role: String, userId: Number }
 
   currentFacingMode = "user"
@@ -113,6 +113,12 @@ export default class extends Controller {
       if (state === "connected") {
         if (this.hasStatusTarget) {
           this.statusTarget.textContent = "Connected"
+        }
+        if (this.hasCancelButtonTarget) {
+          this.cancelButtonTarget.classList.add("hidden")
+        }
+        if (this.hasEndCallButtonTarget) {
+          this.endCallButtonTarget.classList.remove("hidden")
         }
         this.isConnected = true
         this.startHideTimer()
