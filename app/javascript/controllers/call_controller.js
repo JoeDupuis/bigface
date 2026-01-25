@@ -26,6 +26,8 @@ export default class extends Controller {
     await this.fetchTurnCredentials()
     await this.checkMultipleCameras()
     this.subscribeToChannel()
+    this.boundConstrainLocalContainer = () => this.constrainLocalContainer()
+    window.addEventListener("resize", this.boundConstrainLocalContainer)
   }
 
   async checkMultipleCameras() {
@@ -48,6 +50,7 @@ export default class extends Controller {
       })
       this.localVideoTarget.srcObject = this.localStream
       this.localVideoTarget.onloadedmetadata = () => this.updateLocalVideoAspectRatio()
+      this.localVideoTarget.onresize = () => this.updateLocalVideoAspectRatio()
       this.currentFacingMode = facingMode
     } catch (error) {
       console.error("Failed to access camera/microphone:", error)
@@ -82,6 +85,7 @@ export default class extends Controller {
       this.localStream.addTrack(newVideoTrack)
       this.localVideoTarget.srcObject = this.localStream
       this.localVideoTarget.onloadedmetadata = () => this.updateLocalVideoAspectRatio()
+      this.localVideoTarget.onresize = () => this.updateLocalVideoAspectRatio()
 
       if (this.webrtc) {
         this.webrtc.replaceVideoTrack(newVideoTrack)
@@ -236,6 +240,25 @@ export default class extends Controller {
       this.remoteVideoTarget.srcObject = null
     }
     this.clearHideTimer()
+    window.removeEventListener("resize", this.boundConstrainLocalContainer)
+  }
+
+  constrainLocalContainer() {
+    const container = this.localContainerTarget
+    if (container.style.left === "" && container.style.top === "") return
+
+    const rect = container.getBoundingClientRect()
+    let left = rect.left
+    let top = rect.top
+
+    const maxLeft = window.innerWidth - rect.width
+    const maxTop = window.innerHeight - rect.height
+
+    left = Math.max(0, Math.min(left, maxLeft))
+    top = Math.max(0, Math.min(top, maxTop))
+
+    container.style.left = `${left}px`
+    container.style.top = `${top}px`
   }
 
   handleMouseMove(event) {
