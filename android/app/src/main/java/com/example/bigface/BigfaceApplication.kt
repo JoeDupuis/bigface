@@ -3,6 +3,7 @@ package com.example.bigface
 import android.app.Application
 import dev.hotwire.core.config.Hotwire
 import dev.hotwire.core.turbo.config.PathConfiguration
+import dev.hotwire.navigation.config.registerFragmentDestinations
 
 class BigfaceApplication : Application() {
     override fun onCreate() {
@@ -13,6 +14,10 @@ class BigfaceApplication : Application() {
     private fun configureApp() {
         Hotwire.config.debugLoggingEnabled = BuildConfig.DEBUG
         Hotwire.config.webViewDebuggingEnabled = BuildConfig.DEBUG
+
+        Hotwire.registerFragmentDestinations(
+            WebFragment::class
+        )
 
         Hotwire.loadPathConfiguration(
             context = this,
