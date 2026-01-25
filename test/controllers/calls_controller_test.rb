@@ -38,7 +38,7 @@ class CallsControllerTest < ActionDispatch::IntegrationTest
     get calls_path
 
     assert_response :success
-    names = response.body.scan(/<li[^>]*>.*?<a[^>]*>([^<]+)<\/a>/m).flatten
+    names = response.body.scan(/<li\b[^>]*>.*?<a[^>]*>([^<]+)<\/a>/m).flatten
     assert_equal [ "Bob", "Charlie", "Bob" ], names
   end
 
