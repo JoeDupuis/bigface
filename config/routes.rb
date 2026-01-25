@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "configurations/android_v1" => "configurations#android_v1"
+
   resource :session
   resource :turn_credentials, only: [ :show ]
   resources :passwords, param: :token
