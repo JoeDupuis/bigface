@@ -27,6 +27,12 @@ class ConfigurationsController < ApplicationController
           }
         },
         {
+          patterns: [ "/calls/\\d+$" ],
+          properties: {
+            pull_to_refresh_enabled: false
+          }
+        },
+        {
           patterns: [ "/session/new$" ],
           properties: {
             context: "default",
