@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_03_030758) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_26_043456) do
+  create_table "action_push_native_devices", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.integer "owner_id"
+    t.string "owner_type"
+    t.string "platform", null: false
+    t.string "token", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_type", "owner_id"], name: "index_action_push_native_devices_on_owner"
+    t.index ["token"], name: "index_action_push_native_devices_on_token", unique: true
+  end
+
   create_table "calls", force: :cascade do |t|
     t.integer "answered_by_session_id"
     t.integer "caller_id", null: false

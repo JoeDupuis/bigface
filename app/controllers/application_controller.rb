@@ -5,4 +5,18 @@ class ApplicationController < ActionController::Base
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
+
+  before_action :register_push_device
+
+  private
+
+  def register_push_device
+    return unless Current.user
+    token = cookies[:push_token]
+    return if token.blank? || token == session[:registered_push_token]
+
+    device = ApplicationPushDevice.find_or_initialize_by(token: token)
+    device.update!(platform: "google", owner: Current.user)
+    session[:registered_push_token] = token
+  end
 end
