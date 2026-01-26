@@ -38,3 +38,6 @@
 /.envrc
 .devenv*
 devenv.local.nix
+
+# Firebase config (contains API keys)
+android/app/google-services.json

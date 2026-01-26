@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 val serverProperties = Properties().apply {
     val file = rootProject.file("server.properties")
     if (file.exists()) {
@@ -13,11 +17,11 @@ val serverProperties = Properties().apply {
 }
 
 android {
-    namespace = "com.example.bigface"
+    namespace = "io.dupuis.bigface"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.bigface"
+        applicationId = "io.dupuis.bigface"
         minSdk = 34
         targetSdk = 35
         versionCode = 1
@@ -53,6 +57,9 @@ android {
 dependencies {
     implementation("dev.hotwire:core:1.2.4")
     implementation("dev.hotwire:navigation-fragments:1.2.4")
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

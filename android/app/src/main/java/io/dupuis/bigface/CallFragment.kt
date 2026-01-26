@@ -1,4 +1,4 @@
-package com.example.bigface
+package io.dupuis.bigface
 
 import android.os.Bundle
 import android.view.View

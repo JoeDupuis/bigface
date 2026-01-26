@@ -1,4 +1,4 @@
-package com.example.bigface
+package io.dupuis.bigface
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -28,7 +28,8 @@ class MainActivity : HotwireActivity() {
     private fun requestPermissionsIfNeeded() {
         val permissions = arrayOf(
             Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.POST_NOTIFICATIONS
         )
         val needed = permissions.filter {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED

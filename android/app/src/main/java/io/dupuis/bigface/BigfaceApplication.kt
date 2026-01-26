@@ -1,4 +1,4 @@
-package com.example.bigface
+package io.dupuis.bigface
 
 import android.app.Application
 import dev.hotwire.core.config.Hotwire
@@ -10,6 +10,8 @@ class BigfaceApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         configureApp()
+        BigfaceMessagingService.createNotificationChannel(this)
+        BigfaceMessagingService.configurePushToken()
     }
 
     private fun configureApp() {
@@ -29,4 +31,5 @@ class BigfaceApplication : Application() {
             )
         )
     }
+
 }
