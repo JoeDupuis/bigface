@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_26_043456) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_26_063147) do
   create_table "action_push_native_devices", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name"
@@ -24,7 +24,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_043456) do
   end
 
   create_table "calls", force: :cascade do |t|
-    t.integer "answered_by_session_id"
     t.integer "caller_id", null: false
     t.datetime "created_at", null: false
     t.datetime "ended_at"
@@ -32,7 +31,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_043456) do
     t.datetime "started_at"
     t.string "status", default: "ringing", null: false
     t.datetime "updated_at", null: false
-    t.index ["answered_by_session_id"], name: "index_calls_on_answered_by_session_id"
     t.index ["caller_id"], name: "index_calls_on_caller_id"
     t.index ["recipient_id"], name: "index_calls_on_recipient_id"
     t.index ["status"], name: "index_calls_on_status"
@@ -80,7 +78,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_043456) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
-  add_foreign_key "calls", "sessions", column: "answered_by_session_id"
   add_foreign_key "calls", "users", column: "caller_id"
   add_foreign_key "calls", "users", column: "recipient_id"
   add_foreign_key "contacts", "users"

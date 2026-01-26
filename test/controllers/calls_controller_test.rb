@@ -150,7 +150,6 @@ class CallsControllerTest < ActionDispatch::IntegrationTest
     call.reload
     assert call.active?
     assert_not_nil call.started_at
-    assert_equal bob_session, call.answered_by_session
     assert_redirected_to call_path(call)
   end
 

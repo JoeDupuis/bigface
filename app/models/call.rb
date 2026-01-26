@@ -5,7 +5,6 @@ class Call < ApplicationRecord
 
   belongs_to :caller, class_name: "User"
   belongs_to :recipient, class_name: "User"
-  belongs_to :answered_by_session, class_name: "Session", optional: true
 
   enum :status, { ringing: "ringing", active: "active", ended: "ended", missed: "missed", declined: "declined" }
 
@@ -13,12 +12,13 @@ class Call < ApplicationRecord
   validate :caller_and_recipient_are_contacts
 
   after_create_commit :broadcast_to_recipient
+  after_create_commit :send_push_notification_to_recipient
   after_create_commit :schedule_timeout
 
   def answer!(session)
     raise InvalidTransition unless ringing?
-    update!(status: :active, started_at: Time.current, answered_by_session: session)
-    broadcast_answered
+    update!(status: :active, started_at: Time.current)
+    broadcast_answered(session.id)
   end
 
   def end!
@@ -65,15 +65,16 @@ class Call < ApplicationRecord
     })
   end
 
-  def broadcast_answered
+  def broadcast_answered(session_id)
     UserNotificationChannel.broadcast_to(recipient, {
       type: "call_answered",
       call_id: id
     })
     CallChannel.broadcast_to(self, {
       type: "answered",
-      answered_by: answered_by_session_id
+      answered_by: session_id
     })
+    send_call_ended_push("answered")
   end
 
   def broadcast_declined
@@ -86,6 +87,7 @@ class Call < ApplicationRecord
       type: "call_timeout",
       call_id: id
     })
+    send_call_ended_push("timeout")
   end
 
   def broadcast_hangup
@@ -97,6 +99,7 @@ class Call < ApplicationRecord
       type: "call_cancelled",
       call_id: id
     })
+    send_call_ended_push("cancelled")
   end
 
   def schedule_timeout
@@ -107,5 +110,22 @@ class Call < ApplicationRecord
     return if caller_id.blank? || recipient_id.blank?
     return if Contact.exists?(user_id: caller_id, contact_id: recipient_id)
     errors.add(:recipient, "must be a contact")
+  end
+
+  def send_push_notification_to_recipient
+    ApplicationPushNotification.silent.with_data(
+      type: "incoming_call",
+      call_id: id.to_s,
+      caller_name: caller.name,
+      caller_id: caller_id.to_s
+    ).new.deliver_later_to(recipient.push_devices)
+  end
+
+  def send_call_ended_push(reason)
+    ApplicationPushNotification.silent.with_data(
+      type: "call_ended",
+      call_id: id.to_s,
+      reason: reason
+    ).new.deliver_later_to(recipient.push_devices)
   end
 end

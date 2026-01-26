@@ -29,7 +29,6 @@ class CallTest < ActiveSupport::TestCase
 
     assert call.active?
     assert_not_nil call.started_at
-    assert_equal session, call.answered_by_session
   end
 
   test "answer! fails if not ringing" do
