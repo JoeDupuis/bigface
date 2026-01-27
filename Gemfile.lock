@@ -84,6 +84,16 @@ GEM
       uri (>= 0.13.1)
     addressable (2.8.8)
       public_suffix (>= 2.0.2, < 8.0)
+    appium_capybara (3.2.0)
+      appium_lib (>= 13.0.0)
+      capybara (~> 3.36)
+    appium_lib (16.1.1)
+      appium_lib_core (>= 9.2.1, < 12.0)
+      nokogiri (~> 1.8, >= 1.8.1)
+      tomlrb (>= 1.1, < 3.0)
+    appium_lib_core (11.2.0)
+      faye-websocket (>= 0.11, < 0.13)
+      selenium-webdriver (~> 4.21)
     ast (2.4.3)
     base64 (0.3.0)
     bcrypt (3.1.21)
@@ -129,12 +139,16 @@ GEM
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
+    eventmachine (1.2.7)
     faraday (2.14.0)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
     faraday-net_http (3.4.2)
       net-http (~> 0.5)
+    faye-websocket (0.12.0)
+      eventmachine (>= 0.12.0)
+      websocket-driver (>= 0.8.0)
     ferrum (0.17.1)
       addressable (~> 2.5)
       base64 (~> 0.2)
@@ -387,7 +401,14 @@ GEM
     ruby-vips (2.3.0)
       ffi (~> 1.12)
       logger
+    rubyzip (3.2.2)
     securerandom (0.4.1)
+    selenium-webdriver (4.40.0)
+      base64 (~> 0.2)
+      logger (~> 1.4)
+      rexml (~> 3.2, >= 3.2.5)
+      rubyzip (>= 1.2.2, < 4.0)
+      websocket (~> 1.0)
     signet (0.21.0)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
@@ -434,6 +455,7 @@ GEM
     thruster (0.1.17-x86_64-darwin)
     thruster (0.1.17-x86_64-linux)
     timeout (0.6.0)
+    tomlrb (2.0.4)
     tsort (0.2.0)
     turbo-rails (2.0.20)
       actionpack (>= 7.1.0)
@@ -455,6 +477,7 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.9.2)
+    websocket (1.2.11)
     websocket-driver (0.8.0)
       base64
       websocket-extensions (>= 0.1.0)
@@ -477,6 +500,7 @@ PLATFORMS
 
 DEPENDENCIES
   action_push_native
+  appium_capybara
   bcrypt (~> 3.1.7)
   bootsnap
   brakeman

@@ -6,7 +6,12 @@ module SessionTestHelper
       cookie_jar.signed[:session_id] = Current.session.id
 
       if respond_to?(:page)
-        page.driver.set_cookie("session_id", cookie_jar[:session_id])
+        if page.driver.is_a?(Appium::Capybara::Driver)
+          page.driver.appium_driver.manage.add_cookie(name: "session_id", value: cookie_jar[:session_id])
+          page.driver.browser.navigate.to("http://localhost:#{Capybara.server_port}")
+        else
+          page.driver.set_cookie("session_id", cookie_jar[:session_id])
+        end
       else
         cookies["session_id"] = cookie_jar[:session_id]
       end

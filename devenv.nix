@@ -17,7 +17,14 @@
     libxslt
     libffi
     docker
+    nodejs_22
+    temurin-bin-21
   ];
+
+  enterShell = ''
+    export ANDROID_HOME="$HOME/Library/Android/sdk"
+    export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+  '';
 
   languages.ruby.enable = true;
   languages.ruby.versionFile = ./.ruby-version;

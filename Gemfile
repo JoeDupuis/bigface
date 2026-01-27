@@ -54,6 +54,8 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "launchy"
 end
 
 group :development do
@@ -61,14 +63,13 @@ group :development do
   gem "web-console"
   gem "hotwire-spark"
   gem "letter_opener_web", "~> 3.0"
-  gem "launchy"
   gem "mission_control-jobs"
 end
 
 group :test do
   gem "cuprite"
-  gem "launchy"
   gem "webmock"
   # TODO remove this when rails support minitest 6
   gem "minitest", "~> 5.25"
+  gem "appium_capybara"
 end
