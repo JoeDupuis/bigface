@@ -90,6 +90,28 @@ class BigfaceMessagingService : FirebaseMessagingService() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val answerIntent = Intent(this, CallNotificationActionReceiver::class.java).apply {
+            action = "ACTION_ANSWER"
+            putExtra("call_id", callId)
+        }
+        val answerPendingIntent = PendingIntent.getBroadcast(
+            this,
+            callId.hashCode(),
+            answerIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val declineIntent = Intent(this, CallNotificationActionReceiver::class.java).apply {
+            action = "ACTION_DECLINE"
+            putExtra("call_id", callId)
+        }
+        val declinePendingIntent = PendingIntent.getBroadcast(
+            this,
+            callId.hashCode() + 1,
+            declineIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Incoming Call")
@@ -98,6 +120,8 @@ class BigfaceMessagingService : FirebaseMessagingService() {
             .setCategory(NotificationCompat.CATEGORY_CALL)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
+            .addAction(R.drawable.ic_notification, "Answer", answerPendingIntent)
+            .addAction(R.drawable.ic_notification, "Decline", declinePendingIntent)
             .build()
 
         val notificationManager = getSystemService(NotificationManager::class.java)
