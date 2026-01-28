@@ -73,16 +73,9 @@ class AndroidSystemTestCase < ActionDispatch::SystemTestCase
 
     def build_and_install_app(device)
       android_dir = Rails.root.join("android")
-      server_props = android_dir.join("server.properties")
-      original_content = server_props.read
-
-      begin
-        server_props.write("serverUrl=http://localhost:#{ANDROID_TEST_PORT}/\n")
-        Dir.chdir(android_dir) do
-          system("./gradlew assembleE2eDebug") || raise("Failed to build Android app")
-        end
-      ensure
-        server_props.write(original_content)
+      Dir.chdir(android_dir) do
+        env = { "SERVER_URL" => "http://localhost:#{ANDROID_TEST_PORT}/" }
+        system(env, "./gradlew assembleE2eDebug") || raise("Failed to build Android app")
       end
 
       apk_path = android_dir.join("app/build/outputs/apk/e2e/debug/app-e2e-debug.apk")

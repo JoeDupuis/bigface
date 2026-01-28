@@ -29,7 +29,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "SERVER_URL", "\"${serverProperties.getProperty("serverUrl", "https://hotwire-native-demo.dev")}\"")
+        val serverUrl = System.getenv("SERVER_URL")
+            ?: serverProperties.getProperty("serverUrl", "https://hotwire-native-demo.dev")
+        buildConfigField("String", "SERVER_URL", "\"$serverUrl\"")
     }
 
     buildFeatures {
