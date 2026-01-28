@@ -3,7 +3,7 @@ require "appium_capybara"
 
 class AndroidSystemTestCase < ActionDispatch::SystemTestCase
   ANDROID_TEST_PORT = 45678
-  APP_PACKAGE = "io.dupuis.bigface"
+  APP_PACKAGE = "io.dupuis.bigface.e2e"
 
   Capybara.register_driver :appium_android do |app|
     device = ENV.fetch("ANDROID_DEVICE", "emulator-5554")
@@ -15,7 +15,7 @@ class AndroidSystemTestCase < ActionDispatch::SystemTestCase
         "appium:automationName": "UiAutomator2",
         "appium:udid": device,
         "appium:appPackage": APP_PACKAGE,
-        "appium:appActivity": ".MainActivity",
+        "appium:appActivity": "io.dupuis.bigface.MainActivity",
         "appium:noReset": false,
         "appium:fullReset": false,
         "appium:autoGrantPermissions": true,
@@ -79,13 +79,13 @@ class AndroidSystemTestCase < ActionDispatch::SystemTestCase
       begin
         server_props.write("serverUrl=http://localhost:#{ANDROID_TEST_PORT}/\n")
         Dir.chdir(android_dir) do
-          system("./gradlew assembleDebug") || raise("Failed to build Android app")
+          system("./gradlew assembleE2eDebug") || raise("Failed to build Android app")
         end
       ensure
         server_props.write(original_content)
       end
 
-      apk_path = android_dir.join("app/build/outputs/apk/debug/app-debug.apk")
+      apk_path = android_dir.join("app/build/outputs/apk/e2e/debug/app-e2e-debug.apk")
       system("adb -s #{device} install -r #{apk_path}") || raise("Failed to install app")
     end
 
@@ -96,7 +96,17 @@ class AndroidSystemTestCase < ActionDispatch::SystemTestCase
 
   setup do
     self.class.ensure_app_installed
+    page.driver.appium_driver.activate_app(APP_PACKAGE)
+    sleep 1
     switch_to_webview
+  end
+
+  teardown do
+    begin
+      page.driver.quit if page.driver.respond_to?(:quit)
+    rescue StandardError
+    end
+    Capybara.reset_sessions!
   end
 
   def switch_to_webview(timeout: 10)

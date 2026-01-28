@@ -36,6 +36,17 @@ android {
         buildConfig = true
     }
 
+    flavorDimensions += "environment"
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+        }
+        create("e2e") {
+            dimension = "environment"
+            applicationIdSuffix = ".e2e"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
