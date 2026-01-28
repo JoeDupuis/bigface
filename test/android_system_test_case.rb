@@ -95,11 +95,18 @@ class AndroidSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   teardown do
+    clear_app_notifications
     begin
       page.driver.quit if page.driver.respond_to?(:quit)
     rescue StandardError
     end
     Capybara.reset_sessions!
+  end
+
+  def clear_app_notifications
+    device = ENV.fetch("ANDROID_DEVICE", "emulator-5554")
+    system("adb -s #{device} shell pm clear-notifications #{APP_PACKAGE} 2>/dev/null") ||
+      system("adb -s #{device} shell cmd notification cancel_all #{APP_PACKAGE} 2>/dev/null")
   end
 
   def switch_to_webview(timeout: 10)

@@ -1,10 +1,30 @@
 require "android_system_test_case"
 
 class CallNotificationTest < AndroidSystemTestCase
+  test "action cable connects after login" do
+    sign_in_as users(:one)
+    assert_text "Your Contacts"
+
+    state = page.evaluate_script("window.cableConsumer?.connection.getState()")
+    assert_equal "open", state, "ActionCable should be connected after login"
+  end
+
+  test "incoming call shows overlay via websocket" do
+    sign_in_as users(:one)
+    assert_text "Your Contacts"
+
+    url = page.evaluate_script("window.cableConsumer?.url")
+    state = page.evaluate_script("window.cableConsumer?.connection.getState()")
+    puts "Cable URL: #{url}, state: #{state}"
+
+    Call.create!(caller: users(:two), recipient: users(:one))
+
+    assert_text "#{users(:two).name} is calling"
+  end
+
+
   test "tapping call notification opens app" do
-    fill_in "Enter your email address", with: users(:one).email_address
-    fill_in "Enter your password", with: "password"
-    click_button "Sign in"
+    sign_in_as users(:one)
     assert_text "Your Contacts"
 
     switch_to_native
