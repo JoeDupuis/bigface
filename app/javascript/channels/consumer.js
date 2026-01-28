@@ -1,3 +1,12 @@
 import { createConsumer } from "@rails/actioncable"
 
-export default createConsumer()
+const consumer = createConsumer()
+window.cableConsumer = consumer
+
+document.addEventListener("turbo:load", () => {
+  if (consumer.connection.disconnected) {
+    consumer.connection.open()
+  }
+})
+
+export default consumer
