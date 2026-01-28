@@ -42,6 +42,33 @@ class CallNotificationTest < AndroidSystemTestCase
     assert_text users(:two).name
   end
 
+  test "declining call notification does not open app and declines call" do
+    sign_in_as users(:one)
+    assert_text "Your Contacts"
+
+    switch_to_native
+    page.driver.appium_driver.background_app(-1)
+
+    call = Call.create!(caller: users(:two), recipient: users(:one))
+    simulate_incoming_call_notification(call_id: call.id, caller_name: users(:two).name)
+    page.driver.appium_driver.open_notifications
+
+    decline_button = find_element(:xpath, "//*[@content-desc='Decline']")
+    assert decline_button.displayed?, "Decline button should be visible"
+    decline_button.click
+
+    page.driver.appium_driver.back
+
+    notification = find_element(:xpath, "//*[contains(@text, '#{users(:two).name}')]") rescue nil
+    assert_nil notification, "Notification should be dismissed"
+
+    app_state = page.driver.appium_driver.app_state(APP_PACKAGE)
+    assert_equal :running_in_background, app_state, "App should remain in background"
+
+    call.reload
+    assert_equal "declined", call.status, "Call should be declined"
+  end
+
   private
 
   def find_element(method, selector)

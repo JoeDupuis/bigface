@@ -1,4 +1,6 @@
 class Call::DeclinesController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   def create
     @call = Call.find_by(id: params[:call_id])
     return head :not_found unless @call

@@ -76,6 +76,14 @@ class CallTest < ActiveSupport::TestCase
     end
   end
 
+  test "decline! broadcasts to call channel" do
+    call = calls(:alice_calls_bob)
+
+    assert_broadcasts(CallChannel.broadcasting_for(call), 1) do
+      call.decline!
+    end
+  end
+
   test "miss! transitions to missed" do
     call = calls(:alice_calls_bob)
 
