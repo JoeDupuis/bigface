@@ -10,7 +10,7 @@ class BigfaceApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         configureApp()
-        BigfaceMessagingService.createNotificationChannel(this)
+        CallNotificationManager.createNotificationChannel(this)
         BigfaceMessagingService.configurePushToken()
     }
 

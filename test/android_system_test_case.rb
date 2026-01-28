@@ -120,6 +120,16 @@ class AndroidSystemTestCase < ActionDispatch::SystemTestCase
     page.driver.appium_driver.set_context("NATIVE_APP")
   end
 
+  def simulate_incoming_call_notification(call_id:, caller_name:)
+    device = ENV.fetch("ANDROID_DEVICE", "emulator-5554")
+    cmd = "adb -s #{device} shell am broadcast " \
+          "-a io.dupuis.bigface.DEBUG_INCOMING_CALL " \
+          "-n #{APP_PACKAGE}/io.dupuis.bigface.DebugMessagingReceiver " \
+          "--es call_id '#{call_id}' " \
+          "--es caller_name '#{caller_name}'"
+    system(cmd)
+  end
+
   private
 
   def wait_until(timeout, &block)
