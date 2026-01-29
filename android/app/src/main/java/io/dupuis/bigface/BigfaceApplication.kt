@@ -7,6 +7,10 @@ import dev.hotwire.navigation.config.registerFragmentDestinations
 import dev.hotwire.navigation.fragments.HotwireWebFragment
 
 class BigfaceApplication : Application() {
+    companion object {
+        var hasWindowFocus = false
+    }
+
     override fun onCreate() {
         super.onCreate()
         configureApp()

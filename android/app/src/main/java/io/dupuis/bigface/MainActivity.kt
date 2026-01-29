@@ -31,6 +31,11 @@ class MainActivity : HotwireActivity() {
         requestPermissionsIfNeeded()
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        BigfaceApplication.hasWindowFocus = hasFocus
+    }
+
     private fun requestPermissionsIfNeeded() {
         val permissions = arrayOf(
             Manifest.permission.CAMERA,
