@@ -42,7 +42,7 @@ class CallNotificationTest < AndroidSystemTestCase
 
     call.reload
     assert_equal "ringing", call.status, "Call should be active"
-    assert_text "Your contacts"
+    assert_text "Your Contacts"
   end
 
   test "answering call notification opens app and joins call" do
