@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.Person
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ProcessLifecycleOwner
 
 object CallNotificationManager {
     private const val CHANNEL_ID = "calls"
@@ -25,6 +27,8 @@ object CallNotificationManager {
     }
 
     fun showIncomingCall(context: Context, callId: String, callerName: String) {
+        val isInForeground = ProcessLifecycleOwner.get().lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)
+        if (isInForeground) return
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("call_id", callId)

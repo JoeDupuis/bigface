@@ -73,7 +73,7 @@ class CallNotificationTest < AndroidSystemTestCase
     assert_equal "active", call.status, "Call should be active"
   end
 
-  test "declining call notification does not open app and declines call" do
+  test "declining call notification declines call and does not open app" do
     sign_in_as users(:one)
     assert_text "Your Contacts"
 
@@ -98,6 +98,23 @@ class CallNotificationTest < AndroidSystemTestCase
 
     call.reload
     assert_equal "declined", call.status, "Call should be declined"
+  end
+
+  test "incoming call notification does not show when app is in foreground" do
+    sign_in_as users(:one)
+    assert_text "Your Contacts"
+
+    call = Call.create!(caller: users(:two), recipient: users(:one))
+    page.driver.browser.navigate.refresh
+    simulate_incoming_call_notification(call_id: call.id, caller_name: users(:two).name)
+
+    switch_to_native
+    page.driver.appium_driver.open_notifications
+
+    notification = find_element(:xpath, "//*[contains(@text, '#{users(:two).name}')]") rescue nil
+    assert_nil notification, "Notification should not appear when app is in foreground"
+
+    page.driver.appium_driver.back
   end
 
   private

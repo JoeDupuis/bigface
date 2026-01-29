@@ -55,6 +55,7 @@ class BigfaceMessagingService : FirebaseMessagingService() {
         if (type == "incoming_call") {
             val callId = message.data["call_id"] ?: return
             val callerName = message.data["caller_name"] ?: "Unknown"
+
             CallNotificationManager.showIncomingCall(this, callId, callerName)
         }
     }
