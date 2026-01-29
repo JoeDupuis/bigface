@@ -28,6 +28,7 @@ object CallNotificationManager {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("call_id", callId)
+            putExtra("caller_name", callerName)
         }
 
         val contentIntent = PendingIntent.getActivity(
@@ -37,11 +38,12 @@ object CallNotificationManager {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val answerIntent = Intent(context, CallNotificationActionReceiver::class.java).apply {
-            action = "ACTION_ANSWER"
+        val answerIntent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("call_id", callId)
+            putExtra("caller_name", callerName)
         }
-        val answerPendingIntent = PendingIntent.getBroadcast(
+        val answerPendingIntent = PendingIntent.getActivity(
             context,
             callId.hashCode(),
             answerIntent,

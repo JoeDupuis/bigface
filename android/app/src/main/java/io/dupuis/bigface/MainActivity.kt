@@ -1,6 +1,7 @@
 package io.dupuis.bigface
 
 import android.Manifest
+import android.app.NotificationManager
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -22,6 +23,11 @@ class MainActivity : HotwireActivity() {
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.main_nav_host).applyDefaultImeWindowInsets()
 
+        intent?.getStringExtra("call_id")?.let {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+        }
+
         requestPermissionsIfNeeded()
     }
 
@@ -42,8 +48,22 @@ class MainActivity : HotwireActivity() {
     override fun navigatorConfigurations() = listOf(
         NavigatorConfiguration(
             name = "main",
-            startLocation = BuildConfig.SERVER_URL,
+            startLocation = getStartLocation(),
             navigatorHostId = R.id.main_nav_host
         )
     )
+
+    private fun getStartLocation(): String {
+        val callId = intent.getStringExtra("call_id") ?: return BuildConfig.SERVER_URL
+        val callerName = intent.getStringExtra("caller_name") ?: return BuildConfig.SERVER_URL
+
+        cancelCallNotification(callId)
+
+        return "${BuildConfig.SERVER_URL}?incoming_call_id=$callId&caller_name=${java.net.URLEncoder.encode(callerName, "UTF-8")}"
+    }
+
+    private fun cancelCallNotification(callId: String) {
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.cancel(callId.hashCode())
+    }
 }

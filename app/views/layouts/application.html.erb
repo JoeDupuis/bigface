@@ -38,11 +38,13 @@
 
     <%= yield %>
 
-    <div class="incoming-call-overlay hidden"
+    <% incoming_call = params[:incoming_call_id].present? && Call.find_by(id: params[:incoming_call_id], status: :ringing) %>
+    <div class="incoming-call-overlay<%= ' hidden' unless incoming_call %>"
          data-controller="incoming-call"
-         data-incoming-call-target="container">
+         data-incoming-call-target="container"
+         <%= "data-incoming-call-call-id-value=#{incoming_call.id}" if incoming_call %>>
       <div class="content">
-        <p class="callername" data-incoming-call-target="callerName"></p>
+        <p class="callername" data-incoming-call-target="callerName"><%= "#{incoming_call.caller.name} is calling..." if incoming_call %></p>
         <div class="actions">
           <button class="button -answer" data-action="incoming-call#answer">
             Answer
