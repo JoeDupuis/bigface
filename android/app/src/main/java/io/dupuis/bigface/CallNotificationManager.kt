@@ -42,6 +42,7 @@ object CallNotificationManager {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("call_id", callId)
             putExtra("caller_name", callerName)
+            putExtra("auto_answer", true)
         }
         val answerPendingIntent = PendingIntent.getActivity(
             context,

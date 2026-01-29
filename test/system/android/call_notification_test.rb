@@ -39,7 +39,10 @@ class CallNotificationTest < AndroidSystemTestCase
     notification.click
 
     switch_to_webview
-    assert_text users(:two).name
+
+    call.reload
+    assert_equal "ringing", call.status, "Call should be active"
+    assert_text "Your contacts"
   end
 
   test "answering call notification opens app and joins call" do

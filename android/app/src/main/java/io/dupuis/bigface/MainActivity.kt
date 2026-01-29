@@ -56,10 +56,12 @@ class MainActivity : HotwireActivity() {
     private fun getStartLocation(): String {
         val callId = intent.getStringExtra("call_id") ?: return BuildConfig.SERVER_URL
         val callerName = intent.getStringExtra("caller_name") ?: return BuildConfig.SERVER_URL
+        val autoAnswer = intent.getBooleanExtra("auto_answer", false)
 
         cancelCallNotification(callId)
 
-        return "${BuildConfig.SERVER_URL}?incoming_call_id=$callId&caller_name=${java.net.URLEncoder.encode(callerName, "UTF-8")}"
+        val baseUrl = "${BuildConfig.SERVER_URL}?incoming_call_id=$callId&caller_name=${java.net.URLEncoder.encode(callerName, "UTF-8")}"
+        return if (autoAnswer) "$baseUrl&auto_answer=true" else baseUrl
     }
 
     private fun cancelCallNotification(callId: String) {

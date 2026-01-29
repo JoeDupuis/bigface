@@ -41,8 +41,8 @@
 
     <%= yield %>
 
-    <% auto_answer = params[:incoming_call_id].present? %>
-    <% incoming_call = auto_answer ? Call.find_by(id: params[:incoming_call_id], status: :ringing) : Current.user&.incoming_calls&.ringing&.first %>
+    <% auto_answer = params[:auto_answer].present? %>
+    <% incoming_call = params[:incoming_call_id].present? ? Call.find_by(id: params[:incoming_call_id], status: :ringing) : Current.user&.incoming_calls&.ringing&.first %>
     <% if incoming_call %>
       <div class="incoming-call-overlay"
            data-controller="<%= 'auto-answer' if auto_answer %>"
