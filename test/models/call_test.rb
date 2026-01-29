@@ -1,8 +1,10 @@
 require "test_helper"
+require "turbo/broadcastable/test_helper"
 
 class CallTest < ActiveSupport::TestCase
   include ActionCable::TestHelper
   include ActiveJob::TestHelper
+  include Turbo::Broadcastable::TestHelper
 
   test "requires caller" do
     call = Call.new(recipient: users(:one))
@@ -214,6 +216,20 @@ class CallTest < ActiveSupport::TestCase
     assert_enqueued_with(job: CallTimeoutJob) do
       Call.create!(caller: alice, recipient: bob)
     end
+  end
+
+  test "broadcasts turbo refresh to recipient on create" do
+    alice = users(:one)
+    bob = users(:two)
+    Call.where(caller: bob, status: :ringing).update_all(status: :ended)
+
+    turbo_streams = capture_turbo_stream_broadcasts(alice) do
+      Call.create!(caller: bob, recipient: alice)
+      perform_enqueued_jobs
+    end
+
+    assert_equal 1, turbo_streams.size
+    assert_equal "refresh", turbo_streams.first["action"]
   end
 
   test "hangup! from ringing transitions to ended" do

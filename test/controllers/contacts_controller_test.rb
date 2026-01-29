@@ -57,4 +57,17 @@ class ContactsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
   end
+
+  test "GET /contacts shows incoming call overlay when call is ringing" do
+    alice = users(:one)
+    bob = users(:two)
+    sign_in_as(alice)
+    Call.create!(caller: bob, recipient: alice)
+
+    get contacts_path
+
+    assert_response :success
+    assert_select ".incoming-call-overlay"
+    assert_select ".callername", text: "Bob is calling..."
+  end
 end
