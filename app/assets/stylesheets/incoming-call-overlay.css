@@ -28,7 +28,7 @@
     justify-content: center;
   }
 
-  & > .content > .actions > .button {
+  & > .content > .actions .button {
     padding: var(--space-md) var(--space-xl);
     border-radius: var(--radius-full);
     font-size: var(--font-lg);
@@ -37,25 +37,25 @@
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   }
 
-  & > .content > .actions > .button:hover {
+  & > .content > .actions .button:hover {
     transform: scale(1.05);
   }
 
-  & > .content > .actions > .button.-answer {
+  & > .content > .actions .button.-answer {
     background: var(--color-success);
     color: var(--color-white);
   }
 
-  & > .content > .actions > .button.-answer:hover {
+  & > .content > .actions .button.-answer:hover {
     box-shadow: var(--glow-success);
   }
 
-  & > .content > .actions > .button.-decline {
+  & > .content > .actions .button.-decline {
     background: var(--color-danger);
     color: var(--color-white);
   }
 
-  & > .content > .actions > .button.-decline:hover {
+  & > .content > .actions .button.-decline:hover {
     box-shadow: var(--glow-danger);
   }
 }

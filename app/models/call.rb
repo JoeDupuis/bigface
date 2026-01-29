@@ -11,6 +11,8 @@ class Call < ApplicationRecord
   validates :caller_id, uniqueness: { scope: :status, conditions: -> { ringing }, message: "already has a ringing call" }
   validate :caller_and_recipient_are_contacts
 
+  broadcasts_refreshes_to :recipient
+
   after_create_commit :broadcast_to_recipient
   after_create_commit :send_push_notification_to_recipient
   after_create_commit :schedule_timeout

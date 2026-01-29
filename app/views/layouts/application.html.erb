@@ -8,6 +8,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <meta name="turbo-refresh-method" content="morph">
 
     <%= yield :head %>
 
@@ -23,6 +24,8 @@
   </head>
 
   <body>
+    <%= turbo_stream_from Current.user if Current.user %>
+
     <div id="flash-messages">
       <%= render "application/flash_messages" %>
     </div>
@@ -38,23 +41,21 @@
 
     <%= yield %>
 
-    <% incoming_call = params[:incoming_call_id].present? && Call.find_by(id: params[:incoming_call_id], status: :ringing) %>
-    <div class="incoming-call-overlay<%= ' hidden' unless incoming_call %>"
-         data-controller="incoming-call"
-         data-incoming-call-target="container"
-         <%= "data-incoming-call-call-id-value=#{incoming_call.id}" if incoming_call %>>
-      <div class="content">
-        <p class="callername" data-incoming-call-target="callerName"><%= "#{incoming_call.caller.name} is calling..." if incoming_call %></p>
-        <div class="actions">
-          <button class="button -answer" data-action="incoming-call#answer">
-            Answer
-          </button>
-          <button class="button -decline" data-action="incoming-call#decline">
-            Decline
-          </button>
+    <% auto_answer = params[:incoming_call_id].present? %>
+    <% incoming_call = auto_answer ? Call.find_by(id: params[:incoming_call_id], status: :ringing) : Current.user&.incoming_calls&.ringing&.first %>
+    <% if incoming_call %>
+      <div class="incoming-call-overlay"
+           data-controller="<%= 'auto-answer' if auto_answer %>"
+           id="incoming-call-overlay">
+        <div class="content">
+          <p class="callername"><%= "#{incoming_call.caller.name} is calling..." %></p>
+          <div class="actions">
+            <%= button_to "Answer", call_answer_path(incoming_call), class: "button -answer", data: { turbo: false, auto_answer_target: "answerButton" } %>
+            <%= button_to "Decline", call_decline_path(incoming_call), class: "button -decline", data: { turbo: false } %>
+          </div>
         </div>
       </div>
-    </div>
+    <% end %>
 
     <% if Rails.env.development? %>
       <div class="branch-indicator">

@@ -42,6 +42,34 @@ class CallNotificationTest < AndroidSystemTestCase
     assert_text users(:two).name
   end
 
+  test "answering call notification opens app and joins call" do
+    sign_in_as users(:one)
+    assert_text "Your Contacts"
+
+    switch_to_native
+    page.driver.appium_driver.background_app(-1)
+
+    app_state = page.driver.appium_driver.app_state(APP_PACKAGE)
+    assert_equal :running_in_background, app_state, "App should be in foreground"
+
+    call = Call.create!(caller: users(:two), recipient: users(:one))
+    simulate_incoming_call_notification(call_id: call.id, caller_name: users(:two).name)
+
+    page.driver.appium_driver.open_notifications
+
+    answer_button = find_element(:xpath, "//*[@content-desc='Answer']")
+    assert answer_button.displayed?, "Answer button should be visible"
+    answer_button.click
+
+    app_state = page.driver.appium_driver.app_state(APP_PACKAGE)
+    assert_equal :running_in_foreground, app_state, "App should be in foreground"
+
+    switch_to_webview
+
+    call.reload
+    assert_equal "active", call.status, "Call should be active"
+  end
+
   test "declining call notification does not open app and declines call" do
     sign_in_as users(:one)
     assert_text "Your Contacts"

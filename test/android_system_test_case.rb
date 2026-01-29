@@ -89,9 +89,25 @@ class AndroidSystemTestCase < ActionDispatch::SystemTestCase
 
   setup do
     self.class.ensure_app_installed
+    stub_turn_credentials
     page.driver.appium_driver.activate_app(APP_PACKAGE)
     sleep 1
     switch_to_webview
+  end
+
+  def stub_turn_credentials
+    stub_request(:post, %r{rtc\.live\.cloudflare\.com/v1/turn/keys/.+/credentials/generate})
+      .to_return(
+        status: 200,
+        body: {
+          iceServers: {
+            urls: [ "stun:stun.example.com:3478", "turn:turn.example.com:3478" ],
+            username: "test",
+            credential: "test"
+          }
+        }.to_json,
+        headers: { "Content-Type" => "application/json" }
+      )
   end
 
   teardown do
