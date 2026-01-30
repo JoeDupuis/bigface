@@ -1,0 +1,66 @@
+.user-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-white);
+  font-size: var(--font-base);
+  flex-shrink: 0;
+  box-shadow: var(--shadow-md);
+
+  &.-sm {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-sm);
+  }
+
+  &.-violet {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  }
+
+  &.-blue {
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  }
+
+  &.-emerald {
+    background: linear-gradient(135deg, #10b981, #14b8a6);
+  }
+
+  &.-orange {
+    background: linear-gradient(135deg, #f97316, #f59e0b);
+  }
+
+  &.-pink {
+    background: linear-gradient(135deg, #ec4899, #f43f5e);
+  }
+
+  & > .status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--color-slate-800);
+  }
+
+  & > .status.-online {
+    background: var(--color-success);
+  }
+
+  & > .status.-away {
+    background: var(--color-warning);
+  }
+
+  & > .status.-busy {
+    background: var(--color-danger);
+  }
+
+  & > .status.-offline {
+    background: var(--color-gray);
+  }
+}

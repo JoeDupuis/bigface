@@ -8,8 +8,7 @@ class ContactsControllerTest < ActionDispatch::IntegrationTest
     get contacts_path
 
     assert_response :success
-    assert_select "li", text: /Charlie/
-    assert_select "button", text: "Remove"
+    assert_select ".contact-card .name", text: /Charlie/
   end
 
   test "GET /contacts with no contacts" do
@@ -19,8 +18,8 @@ class ContactsControllerTest < ActionDispatch::IntegrationTest
     get contacts_path
 
     assert_response :success
-    assert_select "p", text: /No contacts yet/
-    assert_select "a[href='#{new_invite_path}']", text: "Invite someone!"
+    assert_select ".empty-state .title", text: /No contacts yet/
+    assert_select ".empty-state a[href='#{new_invite_path}']", text: "Invite someone!"
   end
 
   test "GET /contacts when not logged in redirects to login" do

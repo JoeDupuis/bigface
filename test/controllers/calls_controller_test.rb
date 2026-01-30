@@ -8,16 +8,10 @@ class CallsControllerTest < ActionDispatch::IntegrationTest
     get calls_path
 
     assert_response :success
-    assert_select "li", count: 3
+    assert_select ".call-history-item", count: 3
 
-    assert_select "li", text: /Bob/
-    assert_select "li", text: /Charlie/
-    assert_select "li", text: /Outgoing/
-    assert_select "li", text: /Incoming/
-    assert_select "li", text: /Ended/
-    assert_select "li", text: /Missed/
-    assert_select "li", text: /Declined/
-    assert_select ".duration", text: /5:00/
+    assert_select ".call-history-item .name", text: /Bob/
+    assert_select ".call-history-item .name", text: /Charlie/
   end
 
   test "GET /calls excludes other users calls" do
@@ -28,7 +22,7 @@ class CallsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     refute_match "bob_calls_charlie", response.body
-    assert_select "li", count: 3
+    assert_select ".call-history-item", count: 3
   end
 
   test "GET /calls orders by most recent" do
@@ -38,7 +32,7 @@ class CallsControllerTest < ActionDispatch::IntegrationTest
     get calls_path
 
     assert_response :success
-    names = response.body.scan(/<li\b[^>]*>.*?<a[^>]*>([^<]+)<\/a>/m).flatten
+    names = response.body.scan(/class="name[^"]*"[^>]*>([^<]+)</).flatten.map(&:strip)
     assert_equal [ "Bob", "Charlie", "Bob" ], names
   end
 

@@ -1,0 +1,30 @@
+.invite-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  width: 100%;
+  padding: var(--space-12) var(--space-16);
+  background: linear-gradient(135deg, var(--color-emerald), var(--color-emerald-dark));
+  border: none;
+  border-radius: var(--radius-xl);
+  color: var(--color-white);
+  font-size: var(--font-base);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 15px var(--color-emerald-alpha-20);
+  margin-bottom: var(--space-lg);
+}
+
+.invite-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px var(--color-emerald-alpha-20);
+  text-decoration: none;
+}
+
+.invite-button > svg {
+  width: 20px;
+  height: 20px;
+}

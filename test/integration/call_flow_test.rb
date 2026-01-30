@@ -8,7 +8,7 @@ class CallFlowTest < ActionDispatch::IntegrationTest
 
     get contacts_path
     assert_response :success
-    assert_select "li", text: /Alice/
+    assert_select ".contact-card .name", text: /Alice/
 
     assert_difference "Call.count", 1 do
       post calls_path, params: { call: { recipient_id: alice.id } }

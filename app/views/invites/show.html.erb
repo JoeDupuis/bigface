@@ -1,11 +1,39 @@
-<h1>Invite</h1>
+<div class="main-content">
+  <nav class="tab-nav">
+    <%= link_to contacts_path, class: "tab" do %>
+      Contacts
+    <% end %>
+    <%= link_to calls_path, class: "tab" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      Call History
+    <% end %>
+  </nav>
 
-<p><%= @invite.sender.name %> wants to connect with you</p>
+  <div class="invite-card" style="max-width: 500px; margin: 0 auto;">
+    <div class="user-avatar -<%= avatar_color(@invite.sender.name) %>" style="width: 64px; height: 64px; font-size: var(--font-xl);">
+      <%= avatar_initials(@invite.sender.name) %>
+    </div>
 
-<%= form_with url: invite_path(@invite.token), method: :patch do |form| %>
-  <%= form.submit "Accept" %>
-<% end %>
+    <div class="info">
+      <p class="name"><%= @invite.sender.name %></p>
+      <p class="message">wants to connect with you</p>
+    </div>
 
-<%= form_with url: invite_path(@invite.token), method: :delete do |form| %>
-  <%= form.submit "Decline" %>
-<% end %>
+    <div class="actions">
+      <%= form_with url: invite_path(@invite.token), method: :patch do |form| %>
+        <%= form.submit "Accept", class: "btn -accept" %>
+      <% end %>
+
+      <%= form_with url: invite_path(@invite.token), method: :delete do |form| %>
+        <%= form.submit "Decline", class: "btn -decline" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="footer" style="text-align: center; margin-top: var(--space-lg);">
+    <%= link_to "Back to contacts", contacts_path %>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-12) var(--space-16);
+  background: var(--color-slate-900);
+  backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--color-slate-700);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-dropdown);
+
+  & > .brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    text-decoration: none;
+  }
+
+  & > .brand > .logo {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--color-indigo), var(--color-purple));
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+  }
+
+  & > .brand > .logo > svg {
+    width: 20px;
+    height: 20px;
+    color: var(--color-white);
+  }
+
+  & > .brand > .title {
+    font-size: var(--font-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+  }
+
+  & > .actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+  }
+
+  & > .actions .btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-lg);
+    color: var(--color-gray-light);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  & > .actions .btn:hover {
+    background: var(--color-slate-800);
+    color: var(--color-white);
+  }
+
+  & > .actions .btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  & > .actions > form {
+    display: contents;
+  }
+}

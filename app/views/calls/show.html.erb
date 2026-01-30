@@ -1,3 +1,4 @@
+<% content_for :skip_header, true %>
 <div class="call-screen" data-controller="call" data-call-call-id-value="<%= @call.id %>" data-call-role-value="<%= @call.caller == Current.session.user ? 'caller' : 'recipient' %>" data-call-user-id-value="<%= Current.session.user.id %>" data-call-status-value="<%= @call.status %>" data-action="pointermove->call#handleMouseMove pointerup->call#handleTap">
   <div class="remote" data-call-target="remoteContainer">
     <video data-call-target="remoteVideo" autoplay playsinline></video>

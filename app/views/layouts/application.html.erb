@@ -30,13 +30,28 @@
       <%= render "application/flash_messages" %>
     </div>
 
-    <% if authenticated? %>
-      <nav class="nav-header">
-        <%= link_to "Contacts", contacts_path %>
-        <%= link_to "Call History", calls_path %>
-        <%= link_to "Invite", new_invite_path %>
-        <%= button_to "Logout", session_path, method: :delete %>
-      </nav>
+    <% if authenticated? && !content_for?(:skip_header) %>
+      <header class="app-header">
+        <%= link_to contacts_path, class: "brand" do %>
+          <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/>
+              <rect x="2" y="6" width="14" height="12" rx="2"/>
+            </svg>
+          </div>
+          <span class="title">Bigface</span>
+        <% end %>
+
+        <div class="actions">
+          <%= button_to session_path, method: :delete, class: "btn", title: "Logout" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          <% end %>
+        </div>
+      </header>
     <% end %>
 
     <%= yield %>

@@ -1,0 +1,88 @@
+.invite-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  padding: var(--space-16);
+  background: var(--color-slate-800);
+  border: 1px solid var(--color-slate-700);
+  border-radius: var(--radius-xl);
+
+  & > .info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & > .info > .name {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+    margin: 0;
+  }
+
+  & > .info > .message {
+    font-size: var(--font-sm);
+    color: var(--color-gray-light);
+    margin: var(--space-4) 0 0 0;
+  }
+
+  & > .actions {
+    display: flex;
+    gap: var(--space-8);
+  }
+
+  & > .actions > form {
+    display: contents;
+  }
+
+  & > .actions > .btn,
+  & > .actions > form > .btn {
+    padding: var(--space-8) var(--space-16);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--font-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & > .actions > .btn.-accept,
+  & > .actions > form > .btn.-accept {
+    background: var(--color-emerald);
+    color: var(--color-white);
+  }
+
+  & > .actions > .btn.-accept:hover,
+  & > .actions > form > .btn.-accept:hover {
+    background: var(--color-emerald-dark);
+  }
+
+  & > .actions > .btn.-decline,
+  & > .actions > form > .btn.-decline {
+    background: var(--color-slate-700);
+    color: var(--color-gray-light);
+  }
+
+  & > .actions > .btn.-decline:hover,
+  & > .actions > form > .btn.-decline:hover {
+    background: var(--color-slate-900);
+    color: var(--color-white);
+  }
+
+  & > .actions > .btn.-view {
+    background: var(--color-indigo);
+    color: var(--color-white);
+  }
+
+  & > .actions > .btn.-view:hover {
+    background: var(--color-indigo-dark);
+  }
+}
+
+.invite-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}

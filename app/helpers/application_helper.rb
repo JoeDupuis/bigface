@@ -27,4 +27,14 @@ module ApplicationHelper
       nil
     end
   end
+
+  AVATAR_COLORS = %w[violet blue emerald orange pink].freeze
+
+  def avatar_color(name)
+    AVATAR_COLORS[name.to_s.bytes.sum % AVATAR_COLORS.size]
+  end
+
+  def avatar_initials(name)
+    name.to_s.split.map { |n| n[0] }.join.upcase.slice(0, 2)
+  end
 end

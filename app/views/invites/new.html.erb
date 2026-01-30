@@ -1,9 +1,38 @@
-<h1>Invite a Friend</h1>
+<div class="main-content">
+  <nav class="tab-nav">
+    <%= link_to contacts_path, class: "tab" do %>
+      Contacts
+    <% end %>
+    <%= link_to calls_path, class: "tab" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      Call History
+    <% end %>
+  </nav>
 
-<%= render "form_errors", instance: @invite %>
+  <div class="auth-form" style="max-width: 100%;">
+    <div class="header" style="text-align: left;">
+      <h1 class="title">Invite a Friend</h1>
+      <p class="subtitle">Send an invite to add someone to your contacts</p>
+    </div>
 
-<%= form_with model: @invite do |form| %>
-  <%= form.label :recipient_email, "Email address" %><br>
-  <%= form.email_field :recipient_email, required: true, autofocus: true, placeholder: "friend@example.com" %><br>
-  <%= form.submit "Send Invite" %>
-<% end %>
+    <div class="card">
+      <%= render "application/form_errors", instance: @invite %>
+
+      <%= form_with model: @invite do |form| %>
+        <div class="field">
+          <%= form.label :recipient_email, "Email address" %>
+          <%= form.email_field :recipient_email, required: true, autofocus: true, placeholder: "friend@example.com" %>
+        </div>
+
+        <%= form.submit "Send Invite", class: "submit" %>
+      <% end %>
+    </div>
+
+    <div class="footer" style="text-align: left;">
+      <%= link_to "Back to contacts", contacts_path %>
+    </div>
+  </div>
+</div>

@@ -75,7 +75,7 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
     get invites_path
 
     assert_response :success
-    assert_select "p", text: /No pending invites/
+    assert_select ".empty-state .title", text: /No pending invites/
   end
 
   test "GET /invites when not logged in redirects to login" do
@@ -115,7 +115,8 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
     get invite_path(invite.token)
 
     assert_response :success
-    assert_select "p", text: /Bob wants to connect with you/
+    assert_select ".invite-card .name", text: /Bob/
+    assert_select ".invite-card .message", text: /wants to connect/
     assert_select "input[type='submit'][value='Accept']"
     assert_select "input[type='submit'][value='Decline']"
   end

@@ -1,10 +1,56 @@
-<h1>Pending Invites</h1>
+<div class="main-content">
+  <nav class="tab-nav">
+    <%= link_to contacts_path, class: "tab" do %>
+      Contacts
+    <% end %>
+    <%= link_to calls_path, class: "tab" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      Call History
+    <% end %>
+  </nav>
 
-<% if @invites.any? %>
-  <% @invites.each do |invite| %>
-    <p><%= invite.sender.name %> wants to connect with you</p>
-    <%= link_to "View", invite_path(invite.token) %>
-  <% end %>
-<% else %>
-  <p>No pending invites</p>
-<% end %>
+  <div class="contact-section">
+    <h2 class="header">Pending Invites</h2>
+
+    <% if @invites.any? %>
+      <div class="invite-list">
+        <% @invites.each do |invite| %>
+          <div class="invite-card">
+            <div class="user-avatar -<%= avatar_color(invite.sender.name) %>">
+              <%= avatar_initials(invite.sender.name) %>
+            </div>
+
+            <div class="info">
+              <p class="name"><%= invite.sender.name %></p>
+              <p class="message">wants to connect with you</p>
+            </div>
+
+            <div class="actions">
+              <%= link_to "View", invite_path(invite.token), class: "btn -view" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty-state">
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="19" y1="8" x2="19" y2="14"/>
+            <line x1="22" y1="11" x2="16" y2="11"/>
+          </svg>
+        </div>
+        <h3 class="title">No pending invites</h3>
+        <p class="text">When someone invites you, it will appear here</p>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="footer" style="margin-top: var(--space-lg);">
+    <%= link_to "Back to contacts", contacts_path %>
+  </div>
+</div>

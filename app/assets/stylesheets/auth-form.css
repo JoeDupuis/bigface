@@ -1,0 +1,126 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 400px;
+
+  & > .header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+  }
+
+  & > .header > .logo {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, var(--color-indigo), var(--color-purple));
+    border-radius: var(--radius-2xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-lg);
+    box-shadow: var(--shadow-lg);
+  }
+
+  & > .header > .logo > svg {
+    width: 32px;
+    height: 32px;
+    color: var(--color-white);
+  }
+
+  & > .header > .title {
+    font-size: var(--font-2xl);
+    font-weight: var(--font-weight-bold);
+    margin: 0 0 var(--space-8) 0;
+  }
+
+  & > .header > .subtitle {
+    color: var(--color-gray-light);
+    margin: 0;
+  }
+
+  & > .card {
+    background: var(--color-slate-800);
+    border: 1px solid var(--color-slate-700);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-xl);
+  }
+
+  & > .card > form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+  }
+
+  & > .card > form > .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  & > .card > form > .field > label {
+    font-size: var(--font-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-light);
+  }
+
+  & > .card > form > .field > input {
+    width: 100%;
+    padding: var(--space-12) var(--space-16);
+    background: var(--color-slate-900);
+    border: 1px solid var(--color-slate-700);
+    border-radius: var(--radius-lg);
+    color: var(--color-white);
+    font-size: var(--font-base);
+    transition: all var(--transition-fast);
+    box-sizing: border-box;
+  }
+
+  & > .card > form > .field > input::placeholder {
+    color: var(--color-gray-dark);
+  }
+
+  & > .card > form > .field > input:focus {
+    outline: none;
+    border-color: var(--color-indigo);
+    box-shadow: 0 0 0 2px var(--color-indigo-alpha-30);
+  }
+
+  & > .card > form > .submit {
+    width: 100%;
+    padding: var(--space-12) var(--space-16);
+    background: linear-gradient(135deg, var(--color-indigo), var(--color-indigo-dark));
+    border: none;
+    border-radius: var(--radius-lg);
+    color: var(--color-white);
+    font-size: var(--font-base);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: 0 4px 15px var(--color-indigo-alpha-30);
+  }
+
+  & > .card > form > .submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--color-indigo-alpha-30);
+  }
+
+  & > .card > form > .submit:active {
+    transform: translateY(0);
+  }
+
+  & > .footer {
+    text-align: center;
+    margin-top: var(--space-lg);
+    color: var(--color-gray-light);
+  }
+
+  & > .footer > a {
+    color: var(--color-indigo);
+  }
+}

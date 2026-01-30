@@ -1,19 +1,84 @@
-<h1>Your Contacts</h1>
-
-<% if @contacts.any? %>
-  <ul>
-    <% @contacts.each do |contact| %>
-      <li>
-        <%= contact.contact.name %>
-        <%= button_to "Call", calls_path(call: { recipient_id: contact.contact.id }), method: :post %>
-        <%= button_to "Remove", contact, method: :delete,
-            data: { turbo_confirm: "Remove #{contact.contact.name}?" } %>
-      </li>
+<div class="main-content">
+  <nav class="tab-nav">
+    <%= link_to contacts_path, class: "tab -active" do %>
+      Contacts
     <% end %>
-  </ul>
-<% else %>
-  <p>No contacts yet. <%= link_to "Invite someone!", new_invite_path %></p>
-<% end %>
+    <%= link_to calls_path, class: "tab" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      Call History
+      <% missed_count = Current.user.incoming_calls.missed.where("created_at > ?", 24.hours.ago).count %>
+      <% if missed_count > 0 %>
+        <span class="badge"><%= missed_count %></span>
+      <% end %>
+    <% end %>
+  </nav>
 
-<%= link_to "Invite a contact", new_invite_path %>
-<%= link_to "Call History", calls_path %>
+  <div class="search-input">
+    <span class="icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </span>
+    <input type="text" placeholder="Search contacts..." data-controller="contact-search" data-action="input->contact-search#filter">
+  </div>
+
+  <%= link_to new_invite_path, class: "invite-button" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <line x1="19" y1="8" x2="19" y2="14"/>
+      <line x1="22" y1="11" x2="16" y2="11"/>
+    </svg>
+    Invite Contact
+  <% end %>
+
+  <% if @contacts.any? %>
+    <div class="contact-section">
+      <h2 class="header">All Contacts</h2>
+      <div class="list" data-contact-search-target="list">
+        <% @contacts.each do |contact| %>
+          <div class="contact-card" data-name="<%= contact.contact.name.downcase %>">
+            <div class="user-avatar -<%= avatar_color(contact.contact.name) %>">
+              <%= avatar_initials(contact.contact.name) %>
+            </div>
+
+            <div class="info">
+              <p class="name"><%= contact.contact.name %></p>
+            </div>
+
+            <div class="actions">
+              <%= button_to calls_path(call: { recipient_id: contact.contact.id }), method: :post, class: "btn -video", title: "Video call" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/>
+                  <rect x="2" y="6" width="14" height="12" rx="2"/>
+                </svg>
+              <% end %>
+
+              <%= button_to contact, method: :delete, class: "btn -remove", title: "Remove contact", data: { turbo_confirm: "Remove #{contact.contact.name}?" } do %>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+      <h3 class="title">No contacts yet</h3>
+      <p class="text"><%= link_to "Invite someone!", new_invite_path %></p>
+    </div>
+  <% end %>
+</div>

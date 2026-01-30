@@ -7,7 +7,7 @@ class ContactFlowTest < ActionDispatch::IntegrationTest
 
     get contacts_path
     assert_response :success
-    assert_select "p", text: /No contacts yet/
+    assert_select ".empty-state .title", text: /No contacts yet/
 
     get new_invite_path
     assert_response :success
@@ -17,6 +17,6 @@ class ContactFlowTest < ActionDispatch::IntegrationTest
 
     get contacts_path
     assert_response :success
-    assert_select "li", text: /Bob/
+    assert_select ".contact-card .name", text: /Bob/
   end
 end

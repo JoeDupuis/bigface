@@ -1,0 +1,91 @@
+.call-history-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-12);
+  border-radius: var(--radius-lg);
+  transition: background var(--transition-fast);
+
+  &:hover {
+    background: rgba(30, 41, 59, 0.5);
+  }
+
+  & > .info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & > .info > .name {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+    margin: 0;
+  }
+
+  & > .info > .name.-missed {
+    color: var(--color-danger);
+  }
+
+  & > .info > .meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    font-size: var(--font-xs);
+    color: var(--color-gray-light);
+    margin: var(--space-4) 0 0 0;
+  }
+
+  & > .info > .meta .icon {
+    display: inline-flex;
+  }
+
+  & > .info > .meta .icon svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  & > .info > .meta .icon.-outgoing {
+    color: var(--color-emerald);
+  }
+
+  & > .info > .meta .icon.-incoming {
+    color: var(--color-accent);
+  }
+
+  & > .info > .meta .icon.-missed {
+    color: var(--color-danger);
+  }
+
+  & > form {
+    display: contents;
+  }
+
+  .callback {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-full);
+    color: var(--color-gray-light);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .callback:hover {
+    background: var(--color-slate-700);
+    color: var(--color-white);
+  }
+
+  .callback svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.call-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}

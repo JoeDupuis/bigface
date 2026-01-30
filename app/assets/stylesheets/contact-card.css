@@ -1,0 +1,146 @@
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  padding: var(--space-12);
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  border-radius: var(--radius-xl);
+  transition: all var(--transition-fast);
+
+  &:hover {
+    background: rgba(51, 65, 85, 0.5);
+    border-color: var(--color-slate-700);
+  }
+
+  & > .info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & > .info > .name {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+    margin: 0;
+  }
+
+  & > .info > .name > .favorite {
+    color: var(--color-amber);
+  }
+
+  & > .info > .name > .favorite > svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  & > .info > .status {
+    font-size: var(--font-sm);
+    color: var(--color-gray-light);
+    margin: var(--space-4) 0 0 0;
+  }
+
+  & > .info > .status.-online {
+    color: var(--color-success);
+  }
+
+  & > .actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+  }
+
+  & > .actions > form {
+    display: contents;
+  }
+
+  & > .actions .btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  & > .actions .btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  & > .actions .btn.-video {
+    background: var(--color-emerald);
+    color: var(--color-white);
+    box-shadow: 0 2px 8px var(--color-emerald-alpha-20);
+  }
+
+  & > .actions .btn.-video:hover {
+    background: var(--color-emerald-dark);
+  }
+
+  & > .actions .btn.-audio {
+    background: var(--color-accent);
+    color: var(--color-white);
+    box-shadow: 0 2px 8px var(--color-accent-alpha-20);
+  }
+
+  & > .actions .btn.-audio:hover {
+    background: var(--color-accent-dim);
+  }
+
+  & > .actions .btn.-remove {
+    background: transparent;
+    color: var(--color-gray-light);
+    opacity: 0;
+    width: 32px;
+    height: 32px;
+  }
+
+  &:hover > .actions .btn.-remove {
+    opacity: 1;
+  }
+
+  & > .actions .btn.-remove:hover {
+    background: var(--color-slate-700);
+    color: var(--color-danger);
+  }
+
+  & > .actions .btn.-remove svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.contact-section {
+  margin-bottom: var(--space-lg);
+
+  & > .header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    font-size: var(--font-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-12);
+  }
+
+  & > .header > svg {
+    width: 16px;
+    height: 16px;
+    color: var(--color-amber);
+  }
+
+  & > .list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+}
