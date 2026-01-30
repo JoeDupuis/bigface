@@ -31,6 +31,7 @@ class AndroidSystemTestCase < ActionDispatch::SystemTestCase
 
   Capybara.server_port = ANDROID_TEST_PORT
   Capybara.server_host = "0.0.0.0"
+  Capybara.default_max_wait_time = 3
 
   @app_installed = false
 
@@ -136,6 +137,13 @@ class AndroidSystemTestCase < ActionDispatch::SystemTestCase
     page.driver.appium_driver.set_context("NATIVE_APP")
   end
 
+  def refresh_current_window
+    switch_to_webview
+    driver = page.driver.browser
+    handles = driver.window_handles
+    driver.switch_to.window(handles.last)
+  end
+
   def simulate_incoming_call_notification(call_id:, caller_name:)
     device = ENV.fetch("ANDROID_DEVICE", "emulator-5554")
     cmd = "adb -s #{device} shell am broadcast " \
@@ -144,6 +152,14 @@ class AndroidSystemTestCase < ActionDispatch::SystemTestCase
           "--es call_id '#{call_id}' " \
           "--es caller_name '#{caller_name}'"
     system(cmd)
+  end
+
+  def lock_screen
+    page.driver.appium_driver.lock
+  end
+
+  def unlock_screen
+    page.driver.appium_driver.unlock
   end
 
   private

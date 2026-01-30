@@ -45,13 +45,13 @@
     <% incoming_call = params[:incoming_call_id].present? ? Call.find_by(id: params[:incoming_call_id], status: :ringing) : Current.user&.incoming_calls&.ringing&.first %>
     <% if incoming_call %>
       <div class="incoming-call-overlay"
-           data-controller="<%= 'auto-answer' if auto_answer %>"
+           data-controller="<%= 'auto-answer' if auto_answer %> bridge--call"
            id="incoming-call-overlay">
         <div class="content">
           <p class="callername"><%= "#{incoming_call.caller.name} is calling..." %></p>
           <div class="actions">
             <%= button_to "Answer", call_answer_path(incoming_call), class: "button -answer", data: { turbo: false, auto_answer_target: "answerButton" } %>
-            <%= button_to "Decline", call_decline_path(incoming_call), class: "button -decline", data: { turbo: false } %>
+            <%= button_to "Decline", call_decline_path(incoming_call), class: "button -decline", data: { turbo: false, action: "click->bridge--call#decline" } %>
           </div>
         </div>
       </div>

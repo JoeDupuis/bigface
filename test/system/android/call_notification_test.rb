@@ -22,6 +22,24 @@ class CallNotificationTest < AndroidSystemTestCase
     assert_text "#{users(:two).name} is calling"
   end
 
+  test "declining call from foreground keeps app open" do
+    sign_in_as users(:one)
+    assert_text "Your Contacts"
+
+    call = Call.create!(caller: users(:two), recipient: users(:one))
+    page.driver.browser.navigate.refresh
+
+    assert_selector ".incoming-call-overlay"
+    click_button "Decline"
+
+    switch_to_native
+
+    app_state = page.driver.appium_driver.app_state(APP_PACKAGE)
+    assert_equal :running_in_foreground, app_state, "App should stay in foreground when declining from foreground"
+
+    call.reload
+    assert_equal "declined", call.status, "Call should be declined"
+  end
 
   test "tapping call notification opens app" do
     sign_in_as users(:one)
@@ -115,6 +133,33 @@ class CallNotificationTest < AndroidSystemTestCase
     assert_nil notification, "Notification should not appear when app is in foreground"
 
     page.driver.appium_driver.back
+  end
+
+  test "declining call from lock screen dismisses the app" do
+    sign_in_as users(:one)
+    assert_text "Your Contacts"
+
+    switch_to_native
+    page.driver.appium_driver.background_app(-1)
+    lock_screen
+
+    call = Call.create!(caller: users(:two), recipient: users(:one))
+    simulate_incoming_call_notification(call_id: call.id, caller_name: users(:two).name)
+
+    refresh_current_window
+
+    assert_selector ".incoming-call-overlay"
+    click_button "Decline"
+
+    switch_to_native
+
+    app_state = page.driver.appium_driver.app_state(APP_PACKAGE)
+    assert_equal :running_in_background, app_state, "App should be dismissed after declining from lock screen"
+
+    call.reload
+    assert_equal "declined", call.status, "Call should be declined"
+
+    unlock_screen
   end
 
   private
