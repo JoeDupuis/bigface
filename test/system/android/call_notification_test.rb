@@ -61,6 +61,7 @@ class CallNotificationTest < AndroidSystemTestCase
     call.reload
     assert_equal "ringing", call.status, "Call should be active"
     assert_text "Your Contacts"
+    assert_ringing
   end
 
   test "answering call notification opens app and joins call" do
@@ -89,6 +90,7 @@ class CallNotificationTest < AndroidSystemTestCase
 
     call.reload
     assert_equal "active", call.status, "Call should be active"
+    refute_ringing
   end
 
   test "declining call notification declines call and does not open app" do
@@ -149,6 +151,8 @@ class CallNotificationTest < AndroidSystemTestCase
     refresh_current_window
 
     assert_selector ".incoming-call-overlay"
+    assert_ringing
+
     click_button "Decline"
 
     switch_to_native

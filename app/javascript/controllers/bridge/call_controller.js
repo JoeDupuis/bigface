@@ -68,20 +68,10 @@ export default class extends BridgeComponent {
   }
 
   #sendRing() {
-    if (this.enabled) {
-      this.send("ring")
-    } else if (window.nativeBridge) {
-      this.bridge.setAdapter(window.nativeBridge)
-      this.send("ring")
-    }
+    this.send("ring")
   }
 
   #sendStopRing() {
-    if (this.enabled) {
-      this.send("stopRing")
-    } else if (window.nativeBridge) {
-      this.bridge.setAdapter(window.nativeBridge)
-      this.send("stopRing")
-    }
+    this.send("stopRing")
   }
 }

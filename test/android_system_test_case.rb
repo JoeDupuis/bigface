@@ -139,6 +139,7 @@ class AndroidSystemTestCase < ActionDispatch::SystemTestCase
 
   def refresh_current_window
     switch_to_webview
+    sleep 0.5
     driver = page.driver.browser
     handles = driver.window_handles
     driver.switch_to.window(handles.last)
@@ -162,7 +163,23 @@ class AndroidSystemTestCase < ActionDispatch::SystemTestCase
     page.driver.appium_driver.unlock
   end
 
+  def assert_ringing(msg = "Ringtone should be playing")
+    return unless ENV["TEST_RINGING"]
+    assert ringtone_playing?, msg
+  end
+
+  def refute_ringing(msg = "Ringtone should not be playing")
+    return unless ENV["TEST_RINGING"]
+    assert_not ringtone_playing?, msg
+  end
+
   private
+
+  def ringtone_playing?
+    device = ENV.fetch("ANDROID_DEVICE", "emulator-5554")
+    output = `adb -s #{device} shell dumpsys audio`
+    output.lines.any? { |line| line.include?("state:started") && line.include?("USAGE_NOTIFICATION_RINGTONE") }
+  end
 
   def wait_until(timeout, &block)
     start = Time.now
