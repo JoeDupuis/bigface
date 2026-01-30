@@ -5,6 +5,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.Person
 
@@ -12,12 +14,21 @@ object CallNotificationManager {
     private const val CHANNEL_ID = "calls"
 
     fun createNotificationChannel(context: Context) {
+        val ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
+        val audioAttributes = AudioAttributes.Builder()
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+            .build()
+
         val channel = NotificationChannel(
             CHANNEL_ID,
             "Incoming Calls",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             description = "Notifications for incoming calls"
+            setSound(ringtoneUri, audioAttributes)
+            enableVibration(true)
+            vibrationPattern = longArrayOf(0, 1000, 500, 1000)
         }
 
         val notificationManager = context.getSystemService(NotificationManager::class.java)

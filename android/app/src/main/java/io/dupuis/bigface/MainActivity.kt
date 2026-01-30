@@ -65,6 +65,10 @@ class MainActivity : HotwireActivity() {
 
         cancelCallNotification(callId)
 
+        if (!autoAnswer) {
+            RingtonePlayer.start(this)
+        }
+
         val baseUrl = "${BuildConfig.SERVER_URL}?incoming_call_id=$callId&caller_name=${java.net.URLEncoder.encode(callerName, "UTF-8")}"
         return if (autoAnswer) "$baseUrl&auto_answer=true" else baseUrl
     }

@@ -18,6 +18,14 @@ class CallBridgeComponent(
                 Log.d("CallBridgeComponent", "Closing activity")
                 delegate.destination.fragment.activity?.finish()
             }
+            "ring" -> {
+                Log.d("CallBridgeComponent", "Starting ringtone")
+                delegate.destination.fragment.context?.let { RingtonePlayer.start(it) }
+            }
+            "stopRing" -> {
+                Log.d("CallBridgeComponent", "Stopping ringtone")
+                RingtonePlayer.stop()
+            }
         }
     }
 }
