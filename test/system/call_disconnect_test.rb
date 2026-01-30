@@ -7,7 +7,7 @@ class CallDisconnectTest < ApplicationSystemTestCase
 
   test "closing browser during active call ends call for other party" do
     alice = users(:one)
-    bob = users(:two)
+    charlie = users(:three)
 
     using_session(:alice) do
       sign_in_as(alice)
@@ -15,14 +15,15 @@ class CallDisconnectTest < ApplicationSystemTestCase
       assert_text "Your Contacts"
     end
 
-    using_session(:bob) do
-      sign_in_as(bob)
+    using_session(:charlie) do
+      sign_in_as(charlie)
       visit contacts_path
       click_button "Call", match: :first
       assert_current_path(/\/calls\/\d+/, wait: 5)
     end
 
     using_session(:alice) do
+      visit contacts_path
       assert_selector ".incoming-call-overlay:not(.hidden)", wait: 10
       click_button "Answer"
       assert_current_path(/\/calls\/\d+/, wait: 5)
@@ -30,7 +31,7 @@ class CallDisconnectTest < ApplicationSystemTestCase
 
     sleep 1
 
-    using_session(:bob) do
+    using_session(:charlie) do
       visit "about:blank"
     end
 
@@ -41,7 +42,8 @@ class CallDisconnectTest < ApplicationSystemTestCase
 
   test "refreshing browser during active call redirects to contacts" do
     alice = users(:one)
-    bob = users(:two)
+    charlie = users(:three)
+    call_path = nil
 
     using_session(:alice) do
       sign_in_as(alice)
@@ -49,15 +51,16 @@ class CallDisconnectTest < ApplicationSystemTestCase
       assert_text "Your Contacts"
     end
 
-    using_session(:bob) do
-      sign_in_as(bob)
+    using_session(:charlie) do
+      sign_in_as(charlie)
       visit contacts_path
       click_button "Call", match: :first
       assert_current_path(/\/calls\/\d+/, wait: 5)
-      @call_path = current_path
+      call_path = current_path
     end
 
     using_session(:alice) do
+      visit contacts_path
       assert_selector ".incoming-call-overlay:not(.hidden)", wait: 10
       click_button "Answer"
       assert_current_path(/\/calls\/\d+/, wait: 5)
@@ -65,8 +68,8 @@ class CallDisconnectTest < ApplicationSystemTestCase
 
     sleep 1
 
-    using_session(:bob) do
-      visit @call_path
+    using_session(:charlie) do
+      page.driver.refresh
       assert_current_path contacts_path, wait: 5
     end
   end
