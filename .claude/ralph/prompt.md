@@ -124,7 +124,7 @@ When feature is done, tests pass, and **QA has approved**:
 
 ### 8. Exit
 
-**ONLY after QA has approved and the feature is marked complete**, exit by running (must be unsandboxed):
+**ONLY after QA has approved and the feature is marked complete**, exit by running:
 
 ```bash
 .claude/ralph/bin/kill-claude
