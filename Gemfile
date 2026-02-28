@@ -70,6 +70,6 @@ group :test do
   gem "cuprite"
   gem "webmock"
   # TODO remove this when rails support minitest 6
-  gem "minitest", "~> 5.25"
+  gem "minitest", "~> 6.0"
   gem "appium_capybara"
 end
